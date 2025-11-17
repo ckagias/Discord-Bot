@@ -8,6 +8,7 @@ const folders = fs.readdirSync(path.join(__dirname, '../slashCommands'));
 
 for (const folder of folders) {
     const files = fs.readdirSync(`./slashCommands/${folder}`).filter(f => f.endsWith('.js'));
+    console.log(`Loading files from ${folder}:`, files);
 
     for (const file of files) {
         const command = require(path.join(__dirname, '..', 'slashCommands', folder, file));
