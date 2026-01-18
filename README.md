@@ -6,10 +6,8 @@ A Discord bot built with **discord.js**.
 
 - Download the files
 - Install dependencies using *npm install*
-- Create a .env file with:
-    - TOKEN=your_discord_bot_token
-    - WEATHER_API_KEY=your_openweathermap_api_key
-    - CLIENT_ID=your_client_id
+- Edit the .env file with your Tokens:
 - Run the bot using: 
 1) *node src/cmd.js* (To load slashCommands)
+
 2) *node src/index.js* (To begin the bot)
