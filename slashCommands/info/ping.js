@@ -12,7 +12,7 @@ module.exports = {
         const apiLatency = Math.round(client.ws.ping);
         const botLatency = Math.round(Date.now() - interaction.createdTimestamp);
 
-        const embed = new EmbedBuilder()
+        let embed = new EmbedBuilder()
             .setTitle('🏓 | Pong!')
             .setColor(Colors.Green)
             .addFields(
