@@ -1,4 +1,4 @@
-# Discord Bot Template
+# Discord Bot
 
 A Discord bot built with **discord.js**.
 
@@ -7,7 +7,8 @@ A Discord bot built with **discord.js**.
 - Download the files
 - Install dependencies using *npm install*
 - Edit the .env file with your Tokens:
+    - https://discord.com/developers/applications/
+    - https://home.openweathermap.org/api_keys
 - Run the bot using: 
-1) *node src/cmd.js* (To load slashCommands)
-
-2) *node src/index.js* (To begin the bot)
+    *node src/cmd.js && node src/index.js* (To load slashCommands and then start the bot)
+    
