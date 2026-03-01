@@ -21,9 +21,13 @@ Discord-Bot/
 ├── src/
 │   ├── index.js         # Bot entry point
 │   └── cmd.js           # Slash command registration script
-├── texts/               # Text files used by fun commands (8ball.txt, dares.txt, truths.txt)
+├── texts/               # Text files used by fun commands
+│   ├── 8ball.txt        # List of possible 8ball responses
+│   ├── dares.txt        # List of dare questions
+│   └── truths.txt       # List of truth questions
 ├── .env                 # Your secret tokens (never share this!)
-└── package.json
+├── package.json
+└── package-lock.json
 ```
 
 ---
@@ -49,7 +53,6 @@ Discord-Bot/
 | `/help` | Show bot info and system stats |
 | `/commands` | List all available commands by category |
 | `/weather` | Show the current weather for a city |
-| `/help` | Show information about the bot |
 
 ### 🎮 Minigames
 | Command | Description |
