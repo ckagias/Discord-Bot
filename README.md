@@ -8,7 +8,9 @@ A Discord bot template built with **[discord.js](https://discord.js.org/)**, fea
 
 ```
 Discord-Bot/
-├── events/              # Bot events (clientReady, interactionCreate)
+├── events/              # Handles bot startup and slash command execution
+│   ├──clientReady.js 
+│   └── interactionCreate.js
 ├── handlers/            # Automatically loads events and slash commands
 │   ├── eventHandler.js
 │   └── slashCommandHandler.js
