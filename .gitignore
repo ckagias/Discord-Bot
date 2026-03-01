@@ -1,0 +1,14 @@
+# Ignore specific files
+config.json
+.env*
+desktop.ini
+src/clean.js
+events/clientReady.js
+
+# Ignore entire folders
+node_modules/
+temp/
+
+# Ignore all files with a specific extension
+*.log
+*.exe
