@@ -11,14 +11,19 @@ Discord-Bot/
 ├── events/              # Handles bot startup and slash command execution
 │   ├──clientReady.js 
 │   └── interactionCreate.js
+│   └── messageCreate.js
 ├── handlers/            # Automatically loads events and slash commands
 │   ├── eventHandler.js
 │   └── slashCommandHandler.js
+├── models/              # Database schemas for persistent data storage
+│   ├── GuildSchema.js
+│   └── LevelSchema.js
 ├── slashCommands/       # All slash commands organized by category
 │   ├── fun/             # 8ball, dare, truth, gayrate, gamble
 │   ├── info/            # avatar, server-avatar, server-info, membercount, ping, uptime, help, commands
-│   ├── minigames/       # Mini game commands
-│   ├── settings/        # Server/bot settings commands
+│   ├── leveling         # leaderboard, level, toggleleveling
+│   ├── minigames/       # gamble
+│   ├── settings/        # database, membercount
 │   └── utility/         # purge, weather
 ├── src/
 │   ├── index.js         # Bot entry point
@@ -56,6 +61,13 @@ Discord-Bot/
 | `/commands` | List all available commands by category |
 | `/weather` | Show the current weather for a city |
 
+### ⏫ Leveling
+| Command | Description |
+|---------|-------------|
+| `/leaderboard` | Display server's leaderboard |
+| `/level` | Display user's level |
+| `/toggleleveling` | Toggles the leveling system |
+
 ### 🎮 Minigames
 | Command | Description |
 |---------|-------------|
@@ -64,6 +76,7 @@ Discord-Bot/
 ### ⚙️ Settings
 | Command | Description |
 |---------|-------------|
+| `/database` | Show the bot's database |
 | `/membercount` | Show the server's member count |
 
 ### 🔧 Utility
@@ -82,14 +95,17 @@ Discord-Bot/
    npm install
    ```
 
-3. **Set up your `.env` file** with the following values:
+3. **Create an `.env` file** with the following values:
    ```
    Token=your_discord_bot_token
    ClientID=your_discord_application_id
    WEATHER_API_KEY=your_openweathermap_api_key
+   MONGODB_URL=your_mongodb_url
+
    ```
    - Get your bot token and client ID here: https://discord.com/developers/applications/
    - Get your weather API key here: https://home.openweathermap.org/api_keys
+   - Get your MongoDB URL here: https://cloud.mongodb.com/
 
 4. **Register slash commands** with Discord:
    ```bash
@@ -110,6 +126,7 @@ Discord-Bot/
 - [moment](https://momentjs.com/) — Date/time formatting
 - [outdent](https://www.npmjs.com/package/outdent) — Multi-line string formatting
 - [dotenv](https://www.npmjs.com/package/dotenv) — Loads environment variables from `.env`
+- [mongoose](https://mongoosejs.com/) - MongoDB object modeling tool (used for managing the database)
 
 ---
 
