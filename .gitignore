@@ -1,6 +1,6 @@
 # Ignore specific files
 config.json
-.env*
+.env
 desktop.ini
 src/clean.js
 events/clientReady.js
