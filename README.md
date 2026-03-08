@@ -111,7 +111,6 @@ Discord-Bot/
    WEATHER_API_KEY=your_openweathermap_api_key
    MONGODB_URL=your_mongodb_url
    GITHUB_TOKEN = your_github_token
-
    ```
 
    - Get your bot token and client ID here: https://discord.com/developers/applications/
