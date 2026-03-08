@@ -18,8 +18,7 @@ module.exports = {
         // Check if the user has the Manage Channels permission before allowing them to use this command
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
             return interaction.reply({
-                content: 'You need the **Manage Channels** permission to use this command.',
-                ephemeral: true, // Only visible to the user who ran the command
+                content: 'You need the **Manage Channels** permission to use this command.'
             });
         }
 

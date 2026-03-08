@@ -2,6 +2,8 @@
 const LevelSchema = require('../models/LevelSchema');
 // 'GuildSchema' is the Mongoose model that stores per-server settings, like whether leveling is enabled
 const GuildSchema = require('../models/GuildSchema');
+// 'AfkSchema' is the Mongoose model that stores AFK entries for users
+const AfkSchema = require('../models/AfkSchema');
 
 // In-memory cooldown store: Map<guildId, Set<userId>>
 // When a user earns XP they're added to the set.
@@ -24,7 +26,53 @@ module.exports = {
         // Destructure the properties we'll use most often to keep the code clean
         const { author, guild, channel } = message;
 
-        // --- 1. Check if leveling is enabled for this server ---
+        // --- AFK: Return check ---
+        // If the person who sent this message currently has an AFK entry, remove it — they're back
+        const afkEntry = await AfkSchema.findOne({ userId: author.id, guildId: guild.id });
+        if (afkEntry) {
+            await AfkSchema.deleteOne({ userId: author.id, guildId: guild.id });
+            // Calculate how long they were away
+            const awayMs = Date.now() - afkEntry.since.getTime();
+            const awayMins = Math.floor(awayMs / 60_000);
+            const awayHours = Math.floor(awayMins / 60);
+            const timeAway = awayHours > 0
+                ? `${awayHours}h ${awayMins % 60}m`
+                : `${awayMins}m`;
+            await message.reply({
+                content: `👋 Welcome back, ${author}! You were AFK for **${timeAway}**.`,
+                allowedMentions: { users: [] }, // Don't actually ping them
+            }).catch(() => {});
+            // Stop here — don't process leveling or other checks for the return message
+            return;
+        }
+
+        // --- AFK: Mention check ---
+        // If the message mentions any users, check if any of them are currently AFK
+        if (message.mentions.users.size > 0) {
+            for (const [id, mentionedUser] of message.mentions.users) {
+                // Skip if the mentioned user is the bot itself or the message author
+                if (id === message.client.user.id || id === author.id) continue;
+
+                // Look up the mentioned user's AFK entry for this server
+                const mentionedAfk = await AfkSchema.findOne({ userId: id, guildId: guild.id });
+                if (mentionedAfk) {
+                    // Calculate how long they've been AFK
+                    const awayMs = Date.now() - mentionedAfk.since.getTime();
+                    const awayMins = Math.floor(awayMs / 60_000);
+                    const awayHours = Math.floor(awayMins / 60);
+                    const timeAway = awayHours > 0
+                        ? `${awayHours}h ${awayMins % 60}m`
+                        : `${awayMins}m`;
+
+                    // Notify the message author that the mentioned user is AFK
+                    await message.reply({
+                        content: `🌙 **${mentionedUser.tag}** is currently AFK: **${mentionedAfk.reason}** (${timeAway} ago)`,
+                        allowedMentions: { users: [] }, // Don't ping anyone
+                    }).catch(() => {});
+                }
+            }
+        }
+
         // findOneAndUpdate with upsert:true creates the document if it doesn't exist yet,
         // saving us a separate "create on first use" step.
         const guildData = await GuildSchema.findOneAndUpdate(
