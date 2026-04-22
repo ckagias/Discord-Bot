@@ -3,8 +3,7 @@
 const { model, Schema } = require('mongoose');
 
 // This schema stores AFK status for individual users.
-// When a user sets themselves as AFK, a document is created here.
-// When they return (send a message), the document is deleted.
+// When a user sets themselves as AFK, a document is created here | When they return (send a message), the document is deleted.
 const afkSchema = new Schema({
     // The Discord user ID of the AFK user — stored as String because snowflakes exceed JS safe integer limit
     userId: { type: String, required: true },

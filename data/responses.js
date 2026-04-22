@@ -1,6 +1,4 @@
 // Central response data for the truth, dare, and 8ball commands.
-// Node.js caches this module after the first require(), so the arrays
-// are built once at startup and reused on every command call — no file I/O needed.
 
 module.exports = {
 
