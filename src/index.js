@@ -41,3 +41,11 @@ const client = new Client({
     // Log the bot into Discord using the token from the .env file
     await client.login(process.env.Token);
 })();
+
+process.on('unhandledRejection', (reason) => {
+    console.error('[Unhandled Rejection]', reason);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('[Uncaught Exception]', err);
+});
