@@ -27,7 +27,7 @@ module.exports = {
         try {
             // Call the OpenWeatherMap Geocoding API to search for cities matching the typed name
             // This returns up to 5 matching locations with their coordinates
-            const geoRes = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(location)}&limit=5&appid=${apiKey}`);
+            const geoRes = await axios.get(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(location)}&limit=5&appid=${apiKey}`);
       
             // If no cities were found, let the user know and stop
             if (!geoRes.data.length) {
@@ -120,7 +120,7 @@ async function sendWeather(interaction, place, apiKey) {
             )
             .setColor(Math.floor(Math.random() * 0xFFFFFF)) // Random color in hex
             // Use the weather icon from OpenWeatherMap as the embed thumbnail
-            .setThumbnail(`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`)
+            .setThumbnail(`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`)
             // Show who requested the command in the footer
             .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
             .setTimestamp();
