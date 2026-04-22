@@ -14,7 +14,8 @@ module.exports = {
             option.setName('amount')
                 .setDescription('The amount of credits to bet')
                 .setRequired(true)
-                .setMinValue(1)),
+                .setMinValue(1)
+                .setMaxValue(100000)),
 
     async execute(interaction) {
         // Get the amount the user chose to bet
