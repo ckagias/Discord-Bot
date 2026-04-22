@@ -13,6 +13,8 @@ const levelSchema = new Schema({
     xp: { type: Number, default: 0 },
     // The user's current level in this server — starts at 0 for all new members
     level: { type: Number, default: 0 },
+    // Timestamp of the last message that granted XP — used for persistent cooldown checks
+    lastXpAt: { type: Date, default: null },
 });
 
 // Compound index so MongoDB can look up a specific user in a specific server in O(log n) instead of scanning the whole collection

@@ -5,11 +5,7 @@ const GuildSchema = require('../models/GuildSchema');
 // 'AfkSchema' is the Mongoose model that stores AFK entries for users
 const AfkSchema = require('../models/AfkSchema');
 
-// In-memory cooldown store: Map<guildId, Set<userId>>
-// When a user earns XP they're added to the set.
-// After 1 minute they're removed, allowing them to earn XP again.
-// This resets if the bot restarts, which is intentional — it's lightweight on purpose.
-const cooldowns = new Map();
+const xp_cooldown_ms = 60_000;
 
 // This event fires every time a message is sent in any server the bot is in
 module.exports = {
@@ -84,31 +80,19 @@ module.exports = {
         // If the server admin hasn't turned on leveling, stop here — no XP is awarded
         if (!guildData.levelingEnabled) return;
 
-        // --- 2. Cooldown check ---
-        // Each server gets its own Set of user IDs that are currently on cooldown
-        // If this server doesn't have a Set yet, create one now
-        if (!cooldowns.has(guild.id)) cooldowns.set(guild.id, new Set());
-        const guildCooldowns = cooldowns.get(guild.id);
-
-        // If the user is already in the cooldown Set, they sent a message too recently — skip them
-        if (guildCooldowns.has(author.id)) return;
-
-        // Add the user to the cooldown Set so they can't earn XP again for 60 seconds
-        guildCooldowns.add(author.id);
-        // After 60 seconds, remove them from the Set so they can earn XP again
-        setTimeout(() => guildCooldowns.delete(author.id), 60_000);
-
-        // --- 3. Award random XP (15–25) ---
-        // Math.random() * 11 gives a float from 0 to 10.999..., Math.floor brings it to 0–10, +15 shifts the range to 15–25
-        const xpGained = Math.floor(Math.random() * 11) + 15;
-
-        // Look up the user's existing level data for this server, or create a fresh record if none exists
-        // 'new: true' makes Mongoose return the updated document instead of the old one
+        // --- 2. Fetch user data (or create on first message) ---
         let userData = await LevelSchema.findOneAndUpdate(
             { userId: author.id, guildId: guild.id },
             { $setOnInsert: { userId: author.id, guildId: guild.id } },
             { upsert: true, returnDocument: true }
         );
+
+        // --- Cooldown check (persistent — survives restarts) ---
+        const now = Date.now();
+        if (userData.lastXpAt && now - userData.lastXpAt.getTime() < xp_cooldown_ms) return;
+
+        // --- Award random XP (15–25) ---
+        const xpGained = Math.floor(Math.random() * 11) + 15;
 
         // Add the XP they just earned to their running total
         userData.xp += xpGained;
@@ -133,7 +117,7 @@ module.exports = {
         }
 
         // --- 5. Save updated data ---
-        // Persist the updated XP and level back to the database
+        userData.lastXpAt = new Date();
         await userData.save();
     },
 };
