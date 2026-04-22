@@ -12,10 +12,12 @@ module.exports = {
         .addStringOption(option =>
             option.setName('reason')
                 .setDescription('Why are you going AFK? (optional)')
+                .setMaxLength(100)
                 .setRequired(false)),
 
     async execute(interaction) {
-        const reason = interaction.options.getString('reason') || 'No reason provided';
+        const rawReason = interaction.options.getString('reason') || 'No reason provided';
+        const reason = rawReason.trim().slice(0, 100);
 
         // Check if the user already has an active AFK entry in this server
         const existing = await AfkSchema.findOne({
