@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Colors } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 const PAGE_SIZE = 10;
 
@@ -30,18 +30,32 @@ module.exports = {
         const current = player.queue.current;
         const slice = queue.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
-        const description = slice.length > 0
-            ? slice.map((t, i) => `**${page * PAGE_SIZE + i + 1}.** [${t.info.title}](${t.info.uri}) — ${t.info.author}`).join('\n')
+        const currentDuration = current.info.isStream ? 'LIVE' : formatDuration(current.info.duration);
+        const nowPlaying = `[${current.info.title}] — ${current.info.author} · [${currentDuration}]`;
+
+        const upNext = slice.length > 0
+            ? slice.map((t, i) => {
+                const dur = t.info.isStream ? 'LIVE' : formatDuration(t.info.duration);
+                return `**${page * PAGE_SIZE + i + 1}.** [${t.info.title}](${t.info.uri})\n-# ${t.info.author} • ${dur}`;
+            }).join('\n')
             : '*No more tracks in queue.*';
 
         const embed = new EmbedBuilder()
-            .setColor(Colors.Blue)
-            .setTitle('🎶 Queue')
-            .setDescription(
-                `**Now Playing:**\n[${current.info.title}](${current.info.uri}) — ${current.info.author}\n\n**Up Next:**\n${description}`
-            )
+            .setColor(Math.floor(Math.random() * 0xFFFFFF))
+            .setAuthor({ name: 'Queue', iconURL: client.user.displayAvatarURL({ size: 32 }) })
+            .setDescription(`**Now Playing:**\n${nowPlaying}\n\n**Up Next:**\n${upNext}`)
+            .setThumbnail(current.info.artworkUrl ?? null)
             .setFooter({ text: `Page ${page + 1}/${totalPages} · ${queue.length} track(s) in queue` });
 
         await interaction.reply({ embeds: [embed] });
     },
 };
+
+function formatDuration(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    return `${m}:${String(s).padStart(2, '0')}`;
+}

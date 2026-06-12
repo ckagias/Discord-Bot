@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, Colors, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,7 +19,7 @@ module.exports = {
         await player.resume();
 
         const embed = new EmbedBuilder()
-            .setColor(Colors.Green)
+            .setColor(Math.floor(Math.random() * 0xFFFFFF))
             .setDescription('▶️ Resumed.');
 
         await interaction.reply({ embeds: [embed] });

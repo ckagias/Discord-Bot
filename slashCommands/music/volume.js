@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Colors } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,7 +27,7 @@ module.exports = {
         await player.setVolume(level);
 
         const embed = new EmbedBuilder()
-            .setColor(Colors.Green)
+            .setColor(Math.floor(Math.random() * 0xFFFFFF))
             .setDescription(`🔊 Volume set to **${level}%**`);
 
         await interaction.reply({ embeds: [embed] });

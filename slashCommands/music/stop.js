@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, Colors, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,7 +16,7 @@ module.exports = {
         await player.destroy();
 
         const embed = new EmbedBuilder()
-            .setColor(Colors.Red)
+            .setColor(Math.floor(Math.random() * 0xFFFFFF))
             .setDescription('⏹️ Stopped playback and cleared the queue.');
 
         await interaction.reply({ embeds: [embed] });

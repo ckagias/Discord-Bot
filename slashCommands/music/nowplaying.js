@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Colors } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,8 +19,8 @@ module.exports = {
         const progressBar = track.info.isStream ? '🔴 LIVE' : buildProgressBar(position, duration);
 
         const embed = new EmbedBuilder()
-            .setColor(Colors.Blue)
-            .setTitle('🎵 Now Playing')
+            .setColor(Math.floor(Math.random() * 0xFFFFFF))
+            .setAuthor({ name: 'Now Playing', iconURL: client.user.displayAvatarURL({ size: 32 }) })
             .setDescription(`**[${track.info.title}](${track.info.uri})**`)
             .addFields(
                 { name: 'Author', value: track.info.author, inline: true },
@@ -29,7 +29,6 @@ module.exports = {
                 { name: 'Progress', value: progressBar },
             )
             .setThumbnail(track.info.artworkUrl ?? null)
-            .setFooter({ text: player.paused ? '⏸️ Paused' : '▶️ Playing' });
 
         await interaction.reply({ embeds: [embed] });
     },

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Colors } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -28,7 +28,7 @@ module.exports = {
         const labels = { off: '➡️ Loop off', track: '🔂 Looping current track', queue: '🔁 Looping queue' };
 
         const embed = new EmbedBuilder()
-            .setColor(Colors.Blue)
+            .setColor(Math.floor(Math.random() * 0xFFFFFF))
             .setDescription(labels[mode]);
 
         await interaction.reply({ embeds: [embed] });

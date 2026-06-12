@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Colors } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -53,7 +53,7 @@ module.exports = {
             for (const track of result.tracks) player.queue.add(track);
 
             const embed = new EmbedBuilder()
-                .setColor(Colors.Blue)
+                .setColor(Math.floor(Math.random() * 0xFFFFFF))
                 .setTitle('📋 Playlist Queued')
                 .setDescription(`**${result.playlist.name}**`)
                 .addFields({ name: 'Tracks', value: `${result.tracks.length}`, inline: true })
@@ -65,15 +65,14 @@ module.exports = {
             player.queue.add(track);
 
             const embed = new EmbedBuilder()
-                .setColor(Colors.Blue)
-                .setTitle(player.playing ? '📋 Added to Queue' : '🎵 Now Playing')
+                .setColor(Math.floor(Math.random() * 0xFFFFFF))
+                .setAuthor(player.playing ? { name: '📋 Added to Queue' } : { name: 'Now Playing', iconURL: client.user.displayAvatarURL({ size: 32 }) })
                 .setDescription(`**[${track.info.title}](${track.info.uri})**`)
                 .addFields(
                     { name: 'Author', value: track.info.author, inline: true },
                     { name: 'Duration', value: track.info.isStream ? 'LIVE' : formatDuration(track.info.duration), inline: true }
                 )
                 .setThumbnail(track.info.artworkUrl ?? null)
-                .setFooter({ text: `Requested by ${interaction.user.tag}` });
 
             await interaction.editReply({ embeds: [embed] });
         }
