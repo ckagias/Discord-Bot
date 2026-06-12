@@ -19,33 +19,43 @@ module.exports = {
         const rawReason = interaction.options.getString('reason') || 'No reason provided';
         const reason = rawReason.trim().slice(0, 100);
 
-        // Check if the user already has an active AFK entry in this server
-        const existing = await AfkSchema.findOne({
-            userId: interaction.user.id,
-            guildId: interaction.guild.id,
-        });
-
-        if (existing) {
-            // If they're already AFK, remove the status (acts as a toggle to return from AFK)
-            await AfkSchema.deleteOne({ userId: interaction.user.id, guildId: interaction.guild.id });
-            return interaction.reply({
-                content: `✅ Welcome back, ${interaction.user}! Your AFK status has been removed.`,
-                allowedMentions: { users: [] }, // Don't actually ping them
+        try {
+            // Check if the user already has an active AFK entry in this server
+            const existing = await AfkSchema.findOne({
+                userId: interaction.user.id,
+                guildId: interaction.guild.id,
             });
+
+            if (existing) {
+                // If they're already AFK, remove the status (acts as a toggle to return from AFK)
+                await AfkSchema.deleteOne({ userId: interaction.user.id, guildId: interaction.guild.id });
+                return interaction.reply({
+                    content: `✅ Welcome back, ${interaction.user}! Your AFK status has been removed.`,
+                    allowedMentions: { users: [] },
+                });
+            }
+
+            // Save the AFK entry to the database with the provided reason and current timestamp
+            await AfkSchema.create({
+                userId: interaction.user.id,
+                guildId: interaction.guild.id,
+                reason,
+                since: new Date(),
+            });
+
+            // Confirm to the user that their AFK status has been set
+            await interaction.reply({
+                content: `🌙 You are now AFK: **${reason}**`,
+                allowedMentions: { users: [] },
+            });
+        } catch (error) {
+            console.error('[afk] DB error:', error);
+            const payload = { content: '❌ Something went wrong. Please try again.', ephemeral: true };
+            if (interaction.replied || interaction.deferred) {
+                await interaction.editReply(payload).catch(() => {});
+            } else {
+                await interaction.reply(payload).catch(() => {});
+            }
         }
-
-        // Save the AFK entry to the database with the provided reason and current timestamp
-        await AfkSchema.create({
-            userId: interaction.user.id,
-            guildId: interaction.guild.id,
-            reason,
-            since: new Date(),
-        });
-
-        // Confirm to the user that their AFK status has been set
-        await interaction.reply({
-            content: `🌙 You are now AFK: **${reason}**`,
-            allowedMentions: { users: [] },
-        });
     },
 };
