@@ -1,5 +1,5 @@
 // Import Client to create the bot instance, and GatewayIntentBits to specify which events Discord should send us
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, Events } = require('discord.js');
 // Import mongoose to connect to and interact with the MongoDB database
 const mongoose = require('mongoose');
 // Load environment variables from the .env file (e.g. bot token, MongoDB URL)
@@ -18,6 +18,7 @@ const client = new Client({
         GatewayIntentBits.GuildPresences,    // Read member presence/status updates
         GatewayIntentBits.GuildMessageReactions, // Receive message reaction events
         GatewayIntentBits.MessageContent,    // Read the actual text content of messages (privileged intent)
+        GatewayIntentBits.GuildVoiceStates,  // Required for Lavalink to track voice channel state
     ],
 });
 
@@ -38,8 +39,17 @@ const client = new Client({
     // Load slash commands into the client.commands Map so interactionCreate can look them up by name
     require('../handlers/slashCommandHandler')(client);
 
+    // Set up the Lavalink manager (attaches client.lavalink)
+    require('../handlers/lavalinkHandler')(client);
+
+    // Forward raw Discord gateway packets to Lavalink so it can track voice state
+    client.on(Events.Raw, (d) => client.lavalink.sendRawData(d));
+
     // Log the bot into Discord using the token from the .env file
     await client.login(process.env.Token);
+
+    // Init Lavalink after login so the bot's user ID is available
+    await client.lavalink.init({ id: client.user.id, username: client.user.username });
 })();
 
 process.on('unhandledRejection', (reason) => {
