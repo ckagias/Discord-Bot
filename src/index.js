@@ -5,6 +5,13 @@ require('dotenv').config({ debug: false });
 const dns = require('node:dns');
 dns.setServers(['1.1.1.1', '1.0.0.1']);
 
+const required = ['Token', 'ClientID', 'MONGODB_URL'];
+const missing = required.filter(k => !process.env[k]);
+if (missing.length) {
+    console.error('Missing required env vars:', missing.join(', '));
+    process.exit(1);
+}
+
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -46,3 +53,13 @@ process.on('unhandledRejection', (reason) => {
 process.on('uncaughtException', (err) => {
     console.error('[Uncaught Exception]', err);
 });
+
+async function shutdown(signal) {
+    console.log(`[${signal}] Shutting down gracefully...`);
+    client.destroy();
+    await mongoose.connection.close();
+    process.exit(0);
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
