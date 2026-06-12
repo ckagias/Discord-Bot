@@ -40,18 +40,18 @@ module.exports = (client) => {
 
     client.lavalink.on('trackStart', (player, track) => {
         const channel = client.channels.cache.get(player.textChannelId);
-        if (channel) channel.send(`🎵 Now playing: **${track.info.title}** by **${track.info.author}**`);
+        if (channel) channel.send(`Now playing: **${track.info.title}** by **${track.info.author}**`);
     });
 
     client.lavalink.on('trackEnd', (player) => {
         if (player.queue.tracks.length === 0) {
             const channel = client.channels.cache.get(player.textChannelId);
-            if (channel) channel.send('✅ Queue finished. Leaving voice channel in 30 seconds.');
+            if (channel) channel.send('Queue finished. Leaving voice channel in 30 seconds.');
         }
     });
 
     client.lavalink.on('playerDestroy', (player) => {
         const channel = client.channels.cache.get(player.textChannelId);
-        if (channel) channel.send('👋 Left the voice channel.').catch(() => {});
+        if (channel) channel.send('Left the voice channel.').catch(() => {});
     });
 };

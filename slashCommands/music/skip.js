@@ -9,7 +9,7 @@ module.exports = {
         const player = client.lavalink.getPlayer(interaction.guild.id);
 
         if (!player || !player.playing) {
-            return interaction.reply({ content: '❌ Nothing is playing right now.' });
+            return interaction.reply({ content: 'Nothing is playing right now.' });
         }
 
         try {
@@ -23,7 +23,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('[skip] Lavalink error:', error);
-            await interaction.reply({ content: '❌ Failed to skip track. Please try again.' }).catch(() => {});
+            await interaction.reply({ content: 'Failed to skip track. Please try again.' }).catch(() => {});
         }
     },
 };

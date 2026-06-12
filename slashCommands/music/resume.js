@@ -9,7 +9,7 @@ module.exports = {
         const player = client.lavalink.getPlayer(interaction.guild.id);
 
         if (!player) {
-            return interaction.reply({ content: '❌ Nothing is playing right now.' });
+            return interaction.reply({ content: 'Nothing is playing right now.' });
         }
 
         if (!player.paused) {
@@ -26,7 +26,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('[resume] Lavalink error:', error);
-            await interaction.reply({ content: '❌ Failed to resume. Please try again.' }).catch(() => {});
+            await interaction.reply({ content: 'Failed to resume. Please try again.' }).catch(() => {});
         }
     },
 };

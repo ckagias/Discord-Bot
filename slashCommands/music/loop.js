@@ -19,7 +19,7 @@ module.exports = {
         const player = client.lavalink.getPlayer(interaction.guild.id);
 
         if (!player) {
-            return interaction.reply({ content: '❌ Nothing is playing right now.' });
+            return interaction.reply({ content: 'Nothing is playing right now.' });
         }
 
         const mode = interaction.options.getString('mode');
@@ -36,7 +36,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('[loop] Lavalink error:', error);
-            await interaction.reply({ content: '❌ Failed to set loop mode. Please try again.' }).catch(() => {});
+            await interaction.reply({ content: 'Failed to set loop mode. Please try again.' }).catch(() => {});
         }
     },
 };

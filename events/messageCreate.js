@@ -1,29 +1,19 @@
-// 'LevelSchema' is the Mongoose model that stores each user's XP and level per server
 const LevelSchema = require('../models/LevelSchema');
-// 'GuildSchema' is the Mongoose model that stores per-server settings, like whether leveling is enabled
 const GuildSchema = require('../models/GuildSchema');
-// 'AfkSchema' is the Mongoose model that stores AFK entries for users
 const AfkSchema = require('../models/AfkSchema');
 
 const xp_cooldown_ms = 60_000;
 
-// This event fires every time a message is sent in any server the bot is in
 module.exports = {
-    // The name must match the Discord.js event name exactly so the event handler can register it
     name: 'messageCreate',
 
     async execute(message) {
-        // --- Guard clauses: ignore bots and DMs ---
-        // Bots are ignored to prevent infinite loops or XP farming via automated messages
         if (message.author.bot) return;
-        // DMs don't have a guild, so leveling doesn't apply there
         if (!message.guild) return;
 
-        // Destructure the properties we'll use most often to keep the code clean
         const { author, guild, channel } = message;
 
-        // --- AFK: Return check ---
-        // If the person who sent this message currently has an AFK entry, remove it — they're back
+        // AFK return check
         try {
             const afkEntry = await AfkSchema.findOne({ userId: author.id, guildId: guild.id });
             if (afkEntry) {
@@ -35,7 +25,7 @@ module.exports = {
                     ? `${awayHours}h ${awayMins % 60}m`
                     : `${awayMins}m`;
                 await message.reply({
-                    content: `👋 Welcome back, ${author}! You were AFK for **${timeAway}**.`,
+                    content: `Welcome back, ${author}! You were AFK for **${timeAway}**.`,
                     allowedMentions: { users: [] },
                 }).catch(() => {});
                 return;
@@ -44,8 +34,7 @@ module.exports = {
             console.error('[messageCreate] AFK return check failed:', error);
         }
 
-        // --- AFK: Mention check ---
-        // If the message mentions any users, check if any of them are currently AFK
+        // AFK mention check
         if (message.mentions.users.size > 0) {
             for (const [id, mentionedUser] of message.mentions.users) {
                 if (id === message.client.user.id || id === author.id) continue;
@@ -59,7 +48,7 @@ module.exports = {
                             ? `${awayHours}h ${awayMins % 60}m`
                             : `${awayMins}m`;
                         await message.reply({
-                            content: `🌙 **${mentionedUser.tag}** is currently AFK: **${mentionedAfk.reason}** (${timeAway} ago)`,
+                            content: `**${mentionedUser.tag}** is currently AFK: **${mentionedAfk.reason}** (${timeAway} ago)`,
                             allowedMentions: { users: [] },
                         }).catch(() => {});
                     }
@@ -70,8 +59,6 @@ module.exports = {
         }
 
         try {
-            // findOneAndUpdate with upsert:true creates the document if it doesn't exist yet,
-            // saving us a separate "create on first use" step.
             const guildData = await GuildSchema.findOneAndUpdate(
                 { guildId: guild.id },
                 { $setOnInsert: { guildId: guild.id } },
@@ -80,35 +67,44 @@ module.exports = {
 
             if (!guildData?.levelingEnabled) return;
 
-            // --- Fetch user data (or create on first message) ---
-            let userData = await LevelSchema.findOneAndUpdate(
-                { userId: author.id, guildId: guild.id },
-                { $setOnInsert: { userId: author.id, guildId: guild.id } },
-                { upsert: true, returnDocument: true }
+            const xpGained = Math.floor(Math.random() * 11) + 15;
+            const cooldownCutoff = new Date(Date.now() - xp_cooldown_ms);
+
+            // Atomic XP award — the lastXpAt filter ensures only the first of any concurrent messages wins
+            const userData = await LevelSchema.findOneAndUpdate(
+                {
+                    userId: author.id,
+                    guildId: guild.id,
+                    $or: [{ lastXpAt: { $exists: false } }, { lastXpAt: { $lte: cooldownCutoff } }],
+                },
+                {
+                    $inc: { xp: xpGained },
+                    $set: { lastXpAt: new Date() },
+                    $setOnInsert: { userId: author.id, guildId: guild.id },
+                },
+                { upsert: true, new: true }
             );
 
-            // --- Cooldown check (persistent — survives restarts) ---
-            const now = Date.now();
-            if (userData.lastXpAt && now - userData.lastXpAt.getTime() < xp_cooldown_ms) return;
+            // When the cooldown filter doesn't match, upsert inserts a bare doc with a fresh lastXpAt.
+            // Detect that case by checking if the write just happened (within 1s).
+            if (!userData || Date.now() - userData.lastXpAt.getTime() > 1000) return;
 
-            // --- Award random XP (15–25) ---
-            const xpGained = Math.floor(Math.random() * 11) + 15;
-
-            userData.xp += xpGained;
-
-            // Formula: a user needs 100 * (currentLevel + 1)^2 XP to reach the next level.
+            // Level formula: 100 * (level + 1)^2 XP needed to advance
             const xpNeeded = 100 * Math.pow(userData.level + 1, 2);
 
             if (userData.xp >= xpNeeded) {
-                userData.xp -= xpNeeded;
-                userData.level += 1;
-                await channel.send(
-                    `🎉 Congratulations ${author}! You leveled up to **Level ${userData.level}**!`
-                ).catch(() => {});
+                // Atomic level-up — guards against two concurrent writes both levelling up
+                const levelled = await LevelSchema.findOneAndUpdate(
+                    { userId: author.id, guildId: guild.id, xp: { $gte: xpNeeded } },
+                    { $inc: { xp: -xpNeeded, level: 1 } },
+                    { new: true }
+                );
+                if (levelled) {
+                    await channel.send(
+                        `🎉 Congratulations ${author}! You leveled up to **Level ${levelled.level}**!`
+                    ).catch(() => {});
+                }
             }
-
-            userData.lastXpAt = new Date();
-            await userData.save();
         } catch (error) {
             console.error('[messageCreate] Leveling error:', error);
         }

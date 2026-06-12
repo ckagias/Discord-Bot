@@ -45,4 +45,4 @@ function buildProgressBar(position, duration) {
     const filled = Math.round((position / duration) * BAR_LENGTH);
     const empty = BAR_LENGTH - filled;
     return `\`[${'▬'.repeat(filled)}🔘${'─'.repeat(Math.max(0, empty - 1))}]\``;
-}
+};

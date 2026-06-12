@@ -18,12 +18,12 @@ module.exports = {
         const voiceChannel = member.voice?.channel;
 
         if (!voiceChannel) {
-            return interaction.editReply({ content: '❌ You need to be in a voice channel first.' });
+            return interaction.editReply({ content: 'You need to be in a voice channel first.' });
         }
 
         const botMember = interaction.guild.members.me;
         if (botMember.voice.channel && botMember.voice.channel.id !== voiceChannel.id) {
-            return interaction.editReply({ content: '❌ I\'m already playing in a different voice channel.' });
+            return interaction.editReply({ content: 'I\'m already playing in a different voice channel.' });
         }
 
         const query = interaction.options.getString('query');
@@ -48,7 +48,7 @@ module.exports = {
             );
 
             if (!result || result.loadType === 'empty' || result.loadType === 'error') {
-                return interaction.editReply({ content: '❌ No results found for that query.' });
+                return interaction.editReply({ content: 'No results found for that query.' });
             }
 
             if (result.loadType === 'playlist') {
@@ -82,7 +82,7 @@ module.exports = {
             if (!player.playing) await player.play();
         } catch (error) {
             console.error('[play] Lavalink error:', error);
-            const payload = { content: '❌ Music service is unavailable. Please try again later.' };
+            const payload = { content: 'Music service is unavailable. Please try again later.' };
             await interaction.editReply(payload).catch(() => {});
         }
     },
