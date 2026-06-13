@@ -16,19 +16,20 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 
 ## Features
 
-**41+** commands across **7** categories:
+**44+** commands across **7** categories:
 
 - 🎉 **Fun:** `8ball`, `dare`, `truth`, `gayrate`, `poll`
-- ℹ️ **Info:** `avatar`, `server-avatar`, `server-info`, `ping`, `uptime`, `help`, `commands`, `weather`, `github`
+- ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github` and **4** more.
 - ⏫ **Leveling:** `leaderboard`, `level`, `toggleleveling`
-- 🎵 **Music:** `play`, `skip`, `pause`, `resume`, `stop`, `queue`, `nowplaying`, `loop`, `volume`
+- 🎵 **Music:** `play`, `skip`, `pause`, `resume`, `stop` and **4** more.
 - 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`
-- 🛡️ **Moderation:** `kick`, `ban`, `unban`, `timeout`, `mute`, `unmute`, `setmuterole`, `setlog`, `unsetlog`, `setwelcome`, `unsetwelcome`, `setfarewell`, `unsetfarewell`
+- 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **14** more.
 - 🎮 **Minigames:** `gamble`
 
 Other highlights:
 
-- Full moderation suite with role hierarchy checks and bot capability guards
+- Full moderation suite with role hierarchy checks, bot capability guards, and runtime permission checks on every command
+- Trigger system: server admins configure keyword→response pairs, bot replies when the word appears standalone in a message (Unicode-safe, works with Greek and other non-ASCII languages)
 - Mute system using a configurable muted role with automatic channel-level permission overwrites so the mute holds regardless of other roles
 - Server event logger that logs message deletes/edits, joins, leaves, kicks, bans, nickname changes, role updates, and voice activity to a configurable channel
 - Welcome/farewell messages, configurable per-server with custom messages supporting `{user}` and `{server}` placeholders
@@ -127,6 +128,12 @@ Other highlights:
 | `/mute`          | Mute a member using the configured mute role (Moderate Members)                    |
 | `/unmute`        | Unmute a member by removing the mute role (Moderate Members)                       |
 | `/setmuterole`   | Set the role to assign when a member is muted (Manage Server)                      |
+| `/warn`          | Issue a warning to a member (Moderate Members)                                     |
+| `/warnings`      | View all warnings for a member (Moderate Members)                                  |
+| `/clearwarnings` | Clear all warnings for a member (Moderate Members)                                 |
+| `/addtrigger`    | Add a keyword and the bot's response to it (Manage Messages)                       |
+| `/removetrigger` | Remove a trigger keyword (Manage Messages)                                         |
+| `/triggers`      | List all trigger keywords configured for this server                               |
 | `/setlog`        | Set the channel where server events will be logged (Manage Server)                 |
 | `/unsetlog`      | Disable event logging for this server (Manage Server)                              |
 | `/setwelcome`    | Set the channel and optional message for member join announcements (Manage Server) |

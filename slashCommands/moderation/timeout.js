@@ -27,6 +27,9 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
 
     async execute(interaction) {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers))
+            return interaction.reply({ content: 'You do not have permission to timeout members.', ephemeral: true });
+
         const target = interaction.options.getMember('user');
         const duration = interaction.options.getInteger('duration');
         const reason = interaction.options.getString('reason') ?? 'No reason provided';

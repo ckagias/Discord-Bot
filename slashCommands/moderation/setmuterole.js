@@ -12,6 +12,9 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
 
     async execute(interaction) {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild))
+            return interaction.reply({ content: 'You do not have permission to manage server settings.', ephemeral: true });
+
         await interaction.deferReply({ ephemeral: true });
 
         const role = interaction.options.getRole('role');

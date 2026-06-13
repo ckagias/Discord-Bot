@@ -1,6 +1,7 @@
 const LevelSchema = require('../models/LevelSchema');
 const GuildSchema = require('../models/GuildSchema');
 const AfkSchema = require('../models/AfkSchema');
+const TriggerSchema = require('../models/TriggerSchema');
 
 const xp_cooldown_ms = 60_000;
 
@@ -12,6 +13,21 @@ module.exports = {
         if (!message.guild) return;
 
         const { author, guild, channel } = message;
+
+        // Trigger check
+        try {
+            const triggers = await TriggerSchema.find({ guildId: guild.id });
+            for (const { trigger, response } of triggers) {
+                const regex = new RegExp(`(?<![\\p{L}\\p{N}])${trigger.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'iu');
+                if (regex.test(message.content)) {
+                    console.log(`[trigger] matched "${trigger}" in message: "${message.content}"`);
+                    await message.reply({ content: response, allowedMentions: { repliedUser: false } }).catch(err => console.error('[trigger] reply failed:', err));
+                    break;
+                }
+            }
+        } catch (error) {
+            console.error('[messageCreate] Trigger check failed:', error);
+        }
 
         // AFK return check
         try {

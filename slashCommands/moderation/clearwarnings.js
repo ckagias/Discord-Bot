@@ -12,6 +12,9 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
 
     async execute(interaction) {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers))
+            return interaction.reply({ content: 'You do not have permission to clear warnings.', ephemeral: true });
+
         await interaction.deferReply();
 
         const target = interaction.options.getUser('user');
