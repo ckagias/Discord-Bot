@@ -119,27 +119,27 @@ Other highlights:
 ### 🛡️ Moderation
 
 
-| Command          | Description                                                                        |
-| ---------------- | ---------------------------------------------------------------------------------- |
-| `/kick`          | Kick a member from the server (Kick Members)                                       |
-| `/ban`           | Ban a member from the server with optional message deletion (Ban Members)          |
-| `/unban`         | Unban a user by ID (Ban Members)                                                   |
-| `/timeout`       | Temporarily timeout a member for a set duration (Moderate Members)                 |
-| `/mute`          | Mute a member using the configured mute role (Moderate Members)                    |
-| `/unmute`        | Unmute a member by removing the mute role (Moderate Members)                       |
-| `/setmuterole`   | Set the role to assign when a member is muted (Manage Server)                      |
-| `/warn`          | Issue a warning to a member (Moderate Members)                                     |
-| `/warnings`      | View all warnings for a member (Moderate Members)                                  |
-| `/clearwarnings` | Clear all warnings for a member (Moderate Members)                                 |
-| `/addtrigger`    | Add a keyword and the bot's response to it (Manage Messages)                       |
-| `/removetrigger` | Remove a trigger keyword (Manage Messages)                                         |
-| `/triggers`      | List all trigger keywords configured for this server                               |
-| `/setlog`        | Set the channel where server events will be logged (Manage Server)                 |
-| `/unsetlog`      | Disable event logging for this server (Manage Server)                              |
-| `/setwelcome`    | Set the channel and optional message for member join announcements (Manage Server) |
-| `/unsetwelcome`  | Disable welcome messages for this server (Manage Server)                           |
-| `/setfarewell`   | Set the channel and optional message for member leave announcements (Manage Server)|
-| `/unsetfarewell` | Disable farewell messages for this server (Manage Server)                          |
+| Command          | Description                                                                         |
+| ---------------- | ----------------------------------------------------------------------------------- |
+| `/kick`          | Kick a member from the server (Kick Members)                                        |
+| `/ban`           | Ban a member from the server with optional message deletion (Ban Members)           |
+| `/unban`         | Unban a user by ID (Ban Members)                                                    |
+| `/timeout`       | Temporarily timeout a member for a set duration (Moderate Members)                  |
+| `/mute`          | Mute a member using the configured mute role (Moderate Members)                     |
+| `/unmute`        | Unmute a member by removing the mute role (Moderate Members)                        |
+| `/setmuterole`   | Set the role to assign when a member is muted (Manage Server)                       |
+| `/warn`          | Issue a warning to a member (Moderate Members)                                      |
+| `/warnings`      | View all warnings for a member (Moderate Members)                                   |
+| `/clearwarnings` | Clear all warnings for a member (Moderate Members)                                  |
+| `/addtrigger`    | Add a keyword and the bot's response to it (Manage Messages)                        |
+| `/removetrigger` | Remove a trigger keyword (Manage Messages)                                          |
+| `/triggers`      | List all trigger keywords configured for this server                                |
+| `/setlog`        | Set the channel where server events will be logged (Manage Server)                  |
+| `/unsetlog`      | Disable event logging for this server (Manage Server)                               |
+| `/setwelcome`    | Set the channel and optional message for member join announcements (Manage Server)  |
+| `/unsetwelcome`  | Disable welcome messages for this server (Manage Server)                            |
+| `/setfarewell`   | Set the channel and optional message for member leave announcements (Manage Server) |
+| `/unsetfarewell` | Disable farewell messages for this server (Manage Server)                           |
 
 
 ### ⚙️ Settings
@@ -170,13 +170,26 @@ Other highlights:
    WEATHER_API_KEY=your_openweathermap_api_key
    GITHUB_TOKEN=your_github_token
   ```
-3. **Start all services**
+3. **Start the bot**:
   ```bash
-   docker compose up -d
+   npm start
   ```
-4. **Register slash commands**
   ```bash
-   docker compose exec bot node src/cmd.js
+   ./start.sh
+  ```
+4. **Stop the bot**:
+  ```bash
+   npm run stop
+  ```
+  ```bash
+   ./stop.sh
+  ```
+5. **After adding or changing code** (re-registers commands, rebuilds and restarts):
+  ```bash
+   npm run restart
+  ```
+  ```bash
+   ./restart.sh
   ```
 
 ### Option B — Manual
