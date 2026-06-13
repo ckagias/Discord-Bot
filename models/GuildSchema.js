@@ -9,6 +9,9 @@ const guildSchema = new Schema({
     farewellChannelId: { type: String, default: null },
     farewellMessage: { type: String, default: null },
     muteRoleId: { type: String, default: null },
+    ticketCategoryId: { type: String, default: null },
+    ticketSupportRoleId: { type: String, default: null },
+    ticketCount: { type: Number, default: 0 },
 });
 
 module.exports = model('Guild', guildSchema);
