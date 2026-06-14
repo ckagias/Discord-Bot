@@ -19,7 +19,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Support Tickets')
             .setDescription('Click the button below to open a support ticket. Our team will assist you as soon as possible.')
-            .setColor(0x5865F2);
+            .setColor(Math.floor(Math.random() * 0xFFFFFF));
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()

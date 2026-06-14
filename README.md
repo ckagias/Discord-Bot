@@ -16,15 +16,16 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 
 ## Features
 
-**44+** commands across **7** categories:
+**53+** commands across **8** categories:
 
 - 🎉 **Fun:** `8ball`, `dare`, `truth`, `gayrate`, `poll`
-- ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github` and **4** more.
+- ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github` and **5** more.
 - ⏫ **Leveling:** `leaderboard`, `level`, `toggleleveling`
 - 🎵 **Music:** `play`, `skip`, `pause`, `resume`, `stop` and **4** more.
 - 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`
 - 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **14** more.
-- 🎮 **Minigames:** `gamble`
+- 🎮 **Minigames:** `gamble`, `coinflip`, `rps`
+- 🎫 **Tickets:** `ticket-setup`, `ticket-panel`, `ticket-close`, `ticket-stats`, `ticket-reset`
 
 Other highlights:
 
@@ -35,6 +36,7 @@ Other highlights:
 - Welcome/farewell messages, configurable per-server with custom messages supporting `{user}` and `{server}` placeholders
 - Persistent XP leveling per server with atomic writes
 - AFK system with return detection and mention notifications
+- Ticket system with private channels, support role pinging, auto-cleanup of stale tickets, and per-server stats
 - Docker support with Lavalink and MongoDB services included
 - Graceful shutdown handling for clean Docker restarts
 
@@ -69,6 +71,7 @@ Other highlights:
 | `/commands`      | List all available commands by category             |
 | `/weather`       | Show the current weather for a city                 |
 | `/github`        | Show GitHub profile and repository stats for a user |
+| `/botstats`      | Show bot performance stats, feature overview, and total command count |
 
 
 ### ⏫ Leveling
@@ -111,9 +114,11 @@ Other highlights:
 ### 🎮 Minigames
 
 
-| Command   | Description                         |
-| --------- | ----------------------------------- |
-| `/gamble` | Bet your credits on a high-low roll |
+| Command      | Description                                                      |
+| ------------ | ---------------------------------------------------------------- |
+| `/gamble`    | Bet your credits on a high-low roll                              |
+| `/coinflip`  | Flip a coin — optionally guess heads or tails                    |
+| `/rps`       | Play Rock Paper Scissors against the bot with a button-based UI  |
 
 
 ### 🛡️ Moderation
@@ -140,6 +145,18 @@ Other highlights:
 | `/unsetwelcome`  | Disable welcome messages for this server (Manage Server)                            |
 | `/setfarewell`   | Set the channel and optional message for member leave announcements (Manage Server) |
 | `/unsetfarewell` | Disable farewell messages for this server (Manage Server)                           |
+
+
+### 🎫 Tickets
+
+
+| Command          | Description                                                                        |
+| ---------------- | ---------------------------------------------------------------------------------- |
+| `/ticket-setup`  | Set the category and support role for the ticket system (Manage Server)            |
+| `/ticket-panel`  | Post the ticket panel embed with an Open Ticket button in the current channel      |
+| `/ticket-close`  | Close the current ticket channel — usable by the ticket owner or support staff     |
+| `/ticket-stats`  | Show total, open, and closed ticket counts for this server (Manage Server)         |
+| `/ticket-reset`  | Reset the ticket counter to 0 and clear all ticket records (Administrator)         |
 
 
 ### ⚙️ Settings

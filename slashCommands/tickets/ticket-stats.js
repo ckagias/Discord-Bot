@@ -23,7 +23,7 @@ module.exports = {
                 { name: 'Currently Open', value: `${open}`, inline: true },
                 { name: 'Closed', value: `${closed}`, inline: true },
             )
-            .setColor(0x5865F2)
+            .setColor(Math.floor(Math.random() * 0xFFFFFF))
             .setTimestamp();
 
         return interaction.reply({ embeds: [embed], ephemeral: true });

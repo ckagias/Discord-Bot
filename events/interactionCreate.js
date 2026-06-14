@@ -83,7 +83,7 @@ async function handleTicketOpen(interaction) {
     const embed = new EmbedBuilder()
         .setTitle(`Ticket #${String(ticketNumber).padStart(4, '0')}`)
         .setDescription(`Hello ${interaction.user}, thank you for opening a ticket. Please describe your issue and a staff member will assist you shortly.`)
-        .setColor(0x5865F2)
+        .setColor(Math.floor(Math.random() * 0xFFFFFF))
         .setTimestamp();
 
     const row = new ActionRowBuilder().addComponents(
