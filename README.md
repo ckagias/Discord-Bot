@@ -16,10 +16,10 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 
 ## Features
 
-**59+** commands across **8** categories:
+**61+** commands across **8** categories:
 
 - 🎉 **Fun:** `8ball`, `dare`, `truth`, `gayrate`, `poll`
-- ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github`and **7** more.
+- ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github` and **9** more.
 - ⏫ **Leveling:** `leaderboard`, `level`, `toggleleveling`
 - 🎵 **Music:** `play`, `skip`, `pause`, `resume`, `stop` and **4** more.
 - 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`, `snipe`
@@ -63,9 +63,9 @@ Other highlights:
 
 | Command          | Description                                                                                         |
 | ---------------- | --------------------------------------------------------------------------------------------------- |
-| `/avatar`        | Show a user's global avatar                                                                         |
-| `/server-avatar` | Show a user's server avatar                                                                         |
-| `/server-info`   | Display detailed server information                                                                 |
+| `/avatar global` | Show a user's global avatar                                                                         |
+| `/avatar server` | Show a user's server-specific avatar                                                                |
+| `/server info`   | Display detailed server information                                                                 |
 | `/userinfo`      | Display detailed user info including status, activity, voice state, device, nickname, boosting, join position, badges, and roles |
 | `/ping`          | Show the bot's latency and API ping                                                                 |
 | `/uptime`        | Show how long the bot has been online                                                               |
@@ -76,6 +76,8 @@ Other highlights:
 | `/invite`        | Generate a 7-day invite link for the current server                                                 |
 | `/link`          | Generate an invite link to add the bot to another server                                            |
 | `/botstats`      | Show bot performance stats, feature overview, and total command count                               |
+| `/server icon`   | Show the server's icon with download links                                                          |
+| `/server banner` | Show the server's banner with download links (requires server boost level 2+)                       |
 
 
 ### ⏫ Leveling
