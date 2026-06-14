@@ -42,7 +42,7 @@ async function handleTicketOpen(interaction) {
 
     const category = await interaction.guild.channels.fetch(config.ticketCategoryId).catch(() => null);
     if (!category)
-        return interaction.editReply({ content: 'The configured ticket category no longer exists. Ask an admin to run `/ticket-setup` again.' });
+        return interaction.editReply({ content: 'The configured ticket category no longer exists. Ask an admin to run `/ticket setup` again.' });
 
     const existing = await TicketSchema.findOne({ guildId: interaction.guild.id, userId: interaction.user.id, status: 'open' });
     if (existing) {

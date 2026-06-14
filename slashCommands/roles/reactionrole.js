@@ -9,15 +9,15 @@ module.exports = {
         .addSubcommand(sub =>
             sub.setName('add')
                 .setDescription('Bind an emoji on a message to a role.')
-                .addStringOption(o => o.setName('message_id').setDescription('ID of the message').setRequired(true))
-                .addStringOption(o => o.setName('emoji').setDescription('Emoji to react with').setRequired(true))
-                .addRoleOption(o => o.setName('role').setDescription('Role to assign').setRequired(true))
+                .addStringOption(option => option.setName('message_id').setDescription('ID of the message').setRequired(true))
+                .addStringOption(option => option.setName('emoji').setDescription('Emoji to react with').setRequired(true))
+                .addRoleOption(option => option.setName('role').setDescription('Role to assign').setRequired(true))
         )
         .addSubcommand(sub =>
             sub.setName('remove')
                 .setDescription('Remove an emoji→role binding from a message.')
-                .addStringOption(o => o.setName('message_id').setDescription('ID of the message').setRequired(true))
-                .addStringOption(o => o.setName('emoji').setDescription('Emoji to remove').setRequired(true))
+                .addStringOption(option => option.setName('message_id').setDescription('ID of the message').setRequired(true))
+                .addStringOption(option => option.setName('emoji').setDescription('Emoji to remove').setRequired(true))
         )
         .addSubcommand(sub =>
             sub.setName('list')
@@ -26,9 +26,9 @@ module.exports = {
         .addSubcommand(sub =>
             sub.setName('setup')
                 .setDescription('Post a reaction role embed in this channel.')
-                .addStringOption(o => o.setName('title').setDescription('Embed title').setRequired(true))
-                .addStringOption(o => o.setName('description').setDescription('Embed description').setRequired(true))
-                .addStringOption(o => o.setName('color').setDescription('Hex color e.g. #5865F2 (optional)').setRequired(false))
+                .addStringOption(option => option.setName('title').setDescription('Embed title').setRequired(true))
+                .addStringOption(option => option.setName('description').setDescription('Embed description').setRequired(true))
+                .addStringOption(option => option.setName('color').setDescription('Hex color e.g. #5865F2 (optional)').setRequired(false))
         ),
 
     async execute(interaction) {

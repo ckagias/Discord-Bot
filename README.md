@@ -25,7 +25,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 - 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`
 - 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **14** more.
 - 🎮 **Minigames:** `gamble`, `coinflip`, `rps`
-- 🎫 **Tickets:** `ticket-setup`, `ticket-panel`, `ticket-close`, `ticket-stats`, `ticket-reset`
+- 🎫 **Tickets:** `ticket setup`, `ticket panel`, `ticket close`, `ticket stats`, `ticket reset`
 - 🏷️ **Roles:** `reactionrole setup`, `reactionrole add`, `reactionrole remove`, `reactionrole list`
 
 Other highlights:
@@ -152,13 +152,13 @@ Other highlights:
 ### 🎫 Tickets
 
 
-| Command         | Description                                                                    |
-| --------------- | ------------------------------------------------------------------------------ |
-| `/ticket-setup` | Set the category and support role for the ticket system (Manage Server)        |
-| `/ticket-panel` | Post the ticket panel embed with an Open Ticket button in the current channel  |
-| `/ticket-close` | Close the current ticket channel — usable by the ticket owner or support staff |
-| `/ticket-stats` | Show total, open, and closed ticket counts for this server (Manage Server)     |
-| `/ticket-reset` | Reset the ticket counter to 0 and clear all ticket records (Administrator)     |
+| Command          | Description                                                                    |
+| ---------------- | ------------------------------------------------------------------------------ |
+| `/ticket setup`  | Set the category and support role for the ticket system (Manage Server)        |
+| `/ticket panel`  | Post the ticket panel embed with an Open Ticket button in the current channel  |
+| `/ticket close`  | Close the current ticket channel — usable by the ticket owner or support staff |
+| `/ticket stats`  | Show total, open, and closed ticket counts for this server (Manage Server)     |
+| `/ticket reset`  | Reset the ticket counter to 0 and clear all ticket records (Administrator)     |
 
 
 ### 🏷️ Roles
