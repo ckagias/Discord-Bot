@@ -16,13 +16,13 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 
 ## Features
 
-**58+** commands across **8** categories:
+**59+** commands across **8** categories:
 
 - 🎉 **Fun:** `8ball`, `dare`, `truth`, `gayrate`, `poll`
 - ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github`and **7** more.
 - ⏫ **Leveling:** `leaderboard`, `level`, `toggleleveling`
 - 🎵 **Music:** `play`, `skip`, `pause`, `resume`, `stop` and **4** more.
-- 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`
+- 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`, `snipe`
 - 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **14** more.
 - 🎮 **Minigames:** `gamble`, `coinflip`, `rps`
 - 🎫 **Tickets:** `ticket setup`, `ticket panel`, `ticket close`, `ticket stats`, `ticket reset`
@@ -113,6 +113,7 @@ Other highlights:
 | `/purge`    | Delete a number of messages (requires Manage Messages)          |
 | `/shorten`  | Shorten a URL using is.gd                                       |
 | `/slowmode` | Set the slowmode delay for a channel (requires Manage Channels) |
+| `/snipe`    | Show the last deleted message in the current channel            |
 
 
 ### 🎮 Minigames

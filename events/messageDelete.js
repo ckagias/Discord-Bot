@@ -3,9 +3,19 @@ const { getLogChannel } = require('../utils/logger');
 
 module.exports = {
     name: 'messageDelete',
-    async execute(message) {
+    async execute(message, client) {
         if (!message.guild) return;
         if (message.author?.bot) return;
+
+        if (!client.snipeCache) client.snipeCache = new Map();
+        if (message.content || message.attachments?.size) {
+            client.snipeCache.set(message.channelId, {
+                content: message.content || null,
+                attachmentURL: message.attachments?.first()?.url ?? null,
+                author: message.author,
+                deletedAt: new Date(),
+            });
+        }
 
         const logChannel = await getLogChannel(message.guild).catch(() => null);
         if (!logChannel) return;
