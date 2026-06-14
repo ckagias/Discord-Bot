@@ -66,7 +66,7 @@ Other highlights:
 | `/avatar`        | Show a user's global avatar                                                                         |
 | `/server-avatar` | Show a user's server avatar                                                                         |
 | `/server-info`   | Display detailed server information                                                                 |
-| `/userinfo`      | Display detailed user information                                                                   |
+| `/userinfo`      | Display detailed user info including status, activity, voice state, device, nickname, boosting, join position, badges, and roles |
 | `/ping`          | Show the bot's latency and API ping                                                                 |
 | `/uptime`        | Show how long the bot has been online                                                               |
 | `/help`          | Show bot info and system stats                                                                      |
