@@ -16,7 +16,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 
 ## Features
 
-**61+** commands across **8** categories:
+**62+** commands across **8** categories:
 
 - 🎉 **Fun:** `8ball`, `dare`, `truth`, `gayrate`, `poll`
 - ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github` and **9** more.
@@ -115,7 +115,8 @@ Other highlights:
 | `/purge`    | Delete a number of messages (requires Manage Messages)          |
 | `/shorten`  | Shorten a URL using is.gd                                       |
 | `/slowmode` | Set the slowmode delay for a channel (requires Manage Channels) |
-| `/snipe`    | Show the last deleted message in the current channel            |
+| `/snipe delete` | Show the last deleted message in the current channel        |
+| `/snipe edit`   | Show the last edited message (before/after) in this channel |
 
 
 ### 🎮 Minigames
