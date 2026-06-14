@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Events } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
 const mongoose = require('mongoose');
 require('dotenv').config({ debug: false });
 // Use Cloudflare DNS — improves reliability for MongoDB Atlas connections
@@ -20,8 +20,9 @@ const client = new Client({
         GatewayIntentBits.GuildPresences,
         GatewayIntentBits.GuildMessageReactions,
         GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildVoiceStates, // Required for Lavalink voice state tracking
+        GatewayIntentBits.GuildVoiceStates,
     ],
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
 (async () => {

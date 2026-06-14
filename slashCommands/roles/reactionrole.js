@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 const ReactionRoleSchema = require('../../models/ReactionRoleSchema');
 
 module.exports = {
@@ -25,10 +25,7 @@ module.exports = {
         )
         .addSubcommand(sub =>
             sub.setName('setup')
-                .setDescription('Post a reaction role embed in this channel.')
-                .addStringOption(option => option.setName('title').setDescription('Embed title').setRequired(true))
-                .addStringOption(option => option.setName('description').setDescription('Embed description').setRequired(true))
-                .addStringOption(option => option.setName('color').setDescription('Hex color e.g. #5865F2 (optional)').setRequired(false))
+                .setDescription('Post a custom reaction role embed in this channel.')
         ),
 
     async execute(interaction) {
@@ -97,28 +94,54 @@ module.exports = {
         }
 
         if (sub === 'setup') {
-            const title = interaction.options.getString('title');
-            const description = interaction.options.getString('description');
-            const colorInput = interaction.options.getString('color');
+            const modal = new ModalBuilder()
+                .setCustomId(`rr_setup:${interaction.channelId}`)
+                .setTitle('Reaction Role Embed');
 
-            let color = Math.floor(Math.random() * 0xFFFFFF);
-            if (colorInput) {
-                const parsed = parseInt(colorInput.replace('#', ''), 16);
-                if (!isNaN(parsed)) color = parsed;
-            }
+            const titleInput = new TextInputBuilder()
+                .setCustomId('rr_title')
+                .setLabel('Title')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true)
+                .setMaxLength(256);
 
-            const embed = new EmbedBuilder()
-                .setTitle(title)
-                .setDescription(description)
-                .setColor(color)
-                .setFooter({ text: 'React below to receive your roles.' });
+            const descInput = new TextInputBuilder()
+                .setCustomId('rr_description')
+                .setLabel('Description')
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(true)
+                .setMaxLength(4000);
 
-            const sent = await interaction.channel.send({ embeds: [embed] });
+            const colorInput = new TextInputBuilder()
+                .setCustomId('rr_color')
+                .setLabel('Color (hex e.g. #5865F2, blank = random)')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(false)
+                .setMaxLength(7);
 
-            return interaction.reply({
-                content: `Embed posted. Message ID: \`${sent.id}\`\nUse \`/reactionrole add\` with this ID to bind emojis to roles, then add the reactions to the message manually.`,
-                ephemeral: true,
-            });
+            const footerInput = new TextInputBuilder()
+                .setCustomId('rr_footer')
+                .setLabel('Footer text (optional)')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(false)
+                .setMaxLength(2048);
+
+            const thumbnailInput = new TextInputBuilder()
+                .setCustomId('rr_thumbnail')
+                .setLabel('Thumbnail URL (optional)')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(false)
+                .setMaxLength(1024);
+
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(titleInput),
+                new ActionRowBuilder().addComponents(descInput),
+                new ActionRowBuilder().addComponents(colorInput),
+                new ActionRowBuilder().addComponents(footerInput),
+                new ActionRowBuilder().addComponents(thumbnailInput),
+            );
+
+            return interaction.showModal(modal);
         }
 
         if (sub === 'list') {

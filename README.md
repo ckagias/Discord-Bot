@@ -107,7 +107,7 @@ Other highlights:
 
 | Command     | Description                                                     |
 | ----------- | --------------------------------------------------------------- |
-| `/afk`      | Set your AFK status — the bot notifies anyone who mentions you  |
+| `/afk`      | Set your AFK status (the bot notifies anyone who mentions you)  |
 | `/purge`    | Delete a number of messages (requires Manage Messages)          |
 | `/shorten`  | Shorten a URL using is.gd                                       |
 | `/slowmode` | Set the slowmode delay for a channel (requires Manage Channels) |
@@ -119,7 +119,7 @@ Other highlights:
 | Command     | Description                                                     |
 | ----------- | --------------------------------------------------------------- |
 | `/gamble`   | Bet your credits on a high-low roll                             |
-| `/coinflip` | Flip a coin — optionally guess heads or tails                   |
+| `/coinflip` | Flip a coin (optionally guess heads or tails)                   |
 | `/rps`      | Play Rock Paper Scissors against the bot with a button-based UI |
 
 
@@ -152,24 +152,24 @@ Other highlights:
 ### 🎫 Tickets
 
 
-| Command          | Description                                                                    |
-| ---------------- | ------------------------------------------------------------------------------ |
-| `/ticket setup`  | Set the category and support role for the ticket system (Manage Server)        |
-| `/ticket panel`  | Post the ticket panel embed with an Open Ticket button in the current channel  |
-| `/ticket close`  | Close the current ticket channel — usable by the ticket owner or support staff |
-| `/ticket stats`  | Show total, open, and closed ticket counts for this server (Manage Server)     |
-| `/ticket reset`  | Reset the ticket counter to 0 and clear all ticket records (Administrator)     |
+| Command         | Description                                                                    |
+| --------------- | ------------------------------------------------------------------------------ |
+| `/ticket setup` | Set the category and support role for the ticket system (Manage Server)        |
+| `/ticket panel` | Post the ticket panel embed with an Open Ticket button in the current channel  |
+| `/ticket close` | Close the current ticket channel (usable by the ticket owner or support staff) |
+| `/ticket stats` | Show total, open, and closed ticket counts for this server (Manage Server)     |
+| `/ticket reset` | Reset the ticket counter to 0 and clear all ticket records (Administrator)     |
 
 
 ### 🏷️ Roles
 
 
-| Command                | Description                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------ |
-| `/reactionrole setup`  | Post a custom embed in the current channel to use as the reaction role panel   |
-| `/reactionrole add`    | Bind an emoji on a message to a role — bot reacts automatically (Manage Roles) |
-| `/reactionrole remove` | Remove an emoji→role binding from a message (Manage Roles)                     |
-| `/reactionrole list`   | List all reaction role bindings configured for this server (Manage Roles)      |
+| Command                | Description                                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| `/reactionrole setup`  | Open a form to customize and post a reaction role embed (title, description, color, footer, thumbnail) |
+| `/reactionrole add`    | Bind an emoji on a message to a role (bot reacts automatically)                                        |
+| `/reactionrole remove` | Remove an emoji role from a message                                                                    |
+| `/reactionrole list`   | List all reaction role bindings configured for this server                                             |
 
 
 ### ⚙️ Settings
