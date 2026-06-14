@@ -1,0 +1,145 @@
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
+const ReactionRoleSchema = require('../../models/ReactionRoleSchema');
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('reactionrole')
+        .setDescription('Manage reaction roles.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
+        .addSubcommand(sub =>
+            sub.setName('add')
+                .setDescription('Bind an emoji on a message to a role.')
+                .addStringOption(o => o.setName('message_id').setDescription('ID of the message').setRequired(true))
+                .addStringOption(o => o.setName('emoji').setDescription('Emoji to react with').setRequired(true))
+                .addRoleOption(o => o.setName('role').setDescription('Role to assign').setRequired(true))
+        )
+        .addSubcommand(sub =>
+            sub.setName('remove')
+                .setDescription('Remove an emoji→role binding from a message.')
+                .addStringOption(o => o.setName('message_id').setDescription('ID of the message').setRequired(true))
+                .addStringOption(o => o.setName('emoji').setDescription('Emoji to remove').setRequired(true))
+        )
+        .addSubcommand(sub =>
+            sub.setName('list')
+                .setDescription('List all reaction role bindings in this server.')
+        )
+        .addSubcommand(sub =>
+            sub.setName('setup')
+                .setDescription('Post a reaction role embed in this channel.')
+                .addStringOption(o => o.setName('title').setDescription('Embed title').setRequired(true))
+                .addStringOption(o => o.setName('description').setDescription('Embed description').setRequired(true))
+                .addStringOption(o => o.setName('color').setDescription('Hex color e.g. #5865F2 (optional)').setRequired(false))
+        ),
+
+    async execute(interaction) {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles))
+            return interaction.reply({ content: 'You need the **Manage Roles** permission.', ephemeral: true });
+
+        const sub = interaction.options.getSubcommand();
+
+        if (sub === 'add') {
+            const messageId = interaction.options.getString('message_id');
+            const emojiInput = interaction.options.getString('emoji');
+            const role = interaction.options.getRole('role');
+
+            // Parse custom emoji <:name:id> or animated <a:name:id>, otherwise treat as unicode
+            const customMatch = emojiInput.match(/^<a?:\w+:(\d+)>$/);
+            const emojiKey = customMatch ? customMatch[1] : emojiInput.trim();
+
+            if (role.managed || role.id === interaction.guild.id)
+                return interaction.reply({ content: 'That role cannot be assigned.', ephemeral: true });
+
+            if (interaction.guild.members.me.roles.highest.comparePositionTo(role) <= 0)
+                return interaction.reply({ content: `My highest role is below **${role.name}** — I can't assign it.`, ephemeral: true });
+
+            const existing = await ReactionRoleSchema.findOne({
+                guildId: interaction.guild.id,
+                messageId,
+                emoji: emojiKey,
+            });
+
+            if (existing)
+                return interaction.reply({ content: 'That emoji is already bound to a role on that message.', ephemeral: true });
+
+            await ReactionRoleSchema.create({
+                guildId: interaction.guild.id,
+                messageId,
+                emoji: emojiKey,
+                roleId: role.id,
+            });
+
+            const message = await interaction.channel.messages.fetch(messageId).catch(() => null);
+            if (message) await message.react(emojiInput).catch(() => null);
+
+            return interaction.reply({
+                content: `Done. Reacting with ${emojiInput} on message \`${messageId}\` will assign **${role.name}**.`,
+                ephemeral: true,
+            });
+        }
+
+        if (sub === 'remove') {
+            const messageId = interaction.options.getString('message_id');
+            const emojiInput = interaction.options.getString('emoji');
+
+            const customMatch = emojiInput.match(/^<a?:\w+:(\d+)>$/);
+            const emojiKey = customMatch ? customMatch[1] : emojiInput.trim();
+
+            const deleted = await ReactionRoleSchema.findOneAndDelete({
+                guildId: interaction.guild.id,
+                messageId,
+                emoji: emojiKey,
+            });
+
+            if (!deleted)
+                return interaction.reply({ content: 'No binding found for that emoji on that message.', ephemeral: true });
+
+            return interaction.reply({ content: 'Binding removed.', ephemeral: true });
+        }
+
+        if (sub === 'setup') {
+            const title = interaction.options.getString('title');
+            const description = interaction.options.getString('description');
+            const colorInput = interaction.options.getString('color');
+
+            let color = Math.floor(Math.random() * 0xFFFFFF);
+            if (colorInput) {
+                const parsed = parseInt(colorInput.replace('#', ''), 16);
+                if (!isNaN(parsed)) color = parsed;
+            }
+
+            const embed = new EmbedBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setColor(color)
+                .setFooter({ text: 'React below to receive your roles.' });
+
+            const sent = await interaction.channel.send({ embeds: [embed] });
+
+            return interaction.reply({
+                content: `Embed posted. Message ID: \`${sent.id}\`\nUse \`/reactionrole add\` with this ID to bind emojis to roles, then add the reactions to the message manually.`,
+                ephemeral: true,
+            });
+        }
+
+        if (sub === 'list') {
+            const mappings = await ReactionRoleSchema.find({ guildId: interaction.guild.id });
+
+            if (!mappings.length)
+                return interaction.reply({ content: 'No reaction roles configured for this server.', ephemeral: true });
+
+            const lines = mappings.map(m => {
+                const emojiDisplay = /^\d+$/.test(m.emoji)
+                    ? `<:_:${m.emoji}>`
+                    : m.emoji;
+                return `${emojiDisplay} → <@&${m.roleId}> on \`${m.messageId}\``;
+            });
+
+            const embed = new EmbedBuilder()
+                .setTitle('Reaction Roles')
+                .setDescription(lines.join('\n'))
+                .setColor(Math.floor(Math.random() * 0xFFFFFF));
+
+            return interaction.reply({ embeds: [embed], ephemeral: true });
+        }
+    },
+};

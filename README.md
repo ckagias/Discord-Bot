@@ -16,7 +16,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 
 ## Features
 
-**53+** commands across **8** categories:
+**56+** commands across **8** categories:
 
 - 🎉 **Fun:** `8ball`, `dare`, `truth`, `gayrate`, `poll`
 - ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github` and **5** more.
@@ -26,17 +26,19 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 - 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **14** more.
 - 🎮 **Minigames:** `gamble`, `coinflip`, `rps`
 - 🎫 **Tickets:** `ticket-setup`, `ticket-panel`, `ticket-close`, `ticket-stats`, `ticket-reset`
+- 🏷️ **Roles:** `reactionrole setup`, `reactionrole add`, `reactionrole remove`, `reactionrole list`
 
 Other highlights:
 
 - Full moderation suite with role hierarchy checks, bot capability guards, and runtime permission checks on every command
-- Trigger system: server admins configure keyword→response pairs, bot replies when the word appears standalone in a message (Unicode-safe, works with Greek and other non-ASCII languages)
+- Trigger system: server admins configure keyword and the response for that word, bot replies when the word appears standalone in a message (Unicode-safe, works with Greek and other non-ASCII languages)
 - Mute system using a configurable muted role with automatic channel-level permission overwrites so the mute holds regardless of other roles
 - Server event logger that logs message deletes/edits, joins, leaves, kicks, bans, nickname changes, role updates, and voice activity to a configurable channel
 - Welcome/farewell messages, configurable per-server with custom messages supporting `{user}` and `{server}` placeholders
 - Persistent XP leveling per server with atomic writes
 - AFK system with return detection and mention notifications
 - Ticket system with private channels, support role pinging, auto-cleanup of stale tickets, and per-server stats
+- Reaction roles with support for unicode and custom/animated emojis, bound per message and stored in MongoDB
 - Docker support with Lavalink and MongoDB services included
 - Graceful shutdown handling for clean Docker restarts
 
@@ -59,18 +61,18 @@ Other highlights:
 ### ℹ️ Info
 
 
-| Command          | Description                                         |
-| ---------------- | --------------------------------------------------- |
-| `/avatar`        | Show a user's global avatar                         |
-| `/server-avatar` | Show a user's server avatar                         |
-| `/server-info`   | Display detailed server information                 |
-| `/userinfo`      | Display detailed user information                   |
-| `/ping`          | Show the bot's latency and API ping                 |
-| `/uptime`        | Show how long the bot has been online               |
-| `/help`          | Show bot info and system stats                      |
-| `/commands`      | List all available commands by category             |
-| `/weather`       | Show the current weather for a city                 |
-| `/github`        | Show GitHub profile and repository stats for a user |
+| Command          | Description                                                           |
+| ---------------- | --------------------------------------------------------------------- |
+| `/avatar`        | Show a user's global avatar                                           |
+| `/server-avatar` | Show a user's server avatar                                           |
+| `/server-info`   | Display detailed server information                                   |
+| `/userinfo`      | Display detailed user information                                     |
+| `/ping`          | Show the bot's latency and API ping                                   |
+| `/uptime`        | Show how long the bot has been online                                 |
+| `/help`          | Show bot info and system stats                                        |
+| `/commands`      | List all available commands by category                               |
+| `/weather`       | Show the current weather for a city                                   |
+| `/github`        | Show GitHub profile and repository stats for a user                   |
 | `/botstats`      | Show bot performance stats, feature overview, and total command count |
 
 
@@ -114,11 +116,11 @@ Other highlights:
 ### 🎮 Minigames
 
 
-| Command      | Description                                                      |
-| ------------ | ---------------------------------------------------------------- |
-| `/gamble`    | Bet your credits on a high-low roll                              |
-| `/coinflip`  | Flip a coin — optionally guess heads or tails                    |
-| `/rps`       | Play Rock Paper Scissors against the bot with a button-based UI  |
+| Command     | Description                                                     |
+| ----------- | --------------------------------------------------------------- |
+| `/gamble`   | Bet your credits on a high-low roll                             |
+| `/coinflip` | Flip a coin — optionally guess heads or tails                   |
+| `/rps`      | Play Rock Paper Scissors against the bot with a button-based UI |
 
 
 ### 🛡️ Moderation
@@ -150,13 +152,24 @@ Other highlights:
 ### 🎫 Tickets
 
 
-| Command          | Description                                                                        |
-| ---------------- | ---------------------------------------------------------------------------------- |
-| `/ticket-setup`  | Set the category and support role for the ticket system (Manage Server)            |
-| `/ticket-panel`  | Post the ticket panel embed with an Open Ticket button in the current channel      |
-| `/ticket-close`  | Close the current ticket channel — usable by the ticket owner or support staff     |
-| `/ticket-stats`  | Show total, open, and closed ticket counts for this server (Manage Server)         |
-| `/ticket-reset`  | Reset the ticket counter to 0 and clear all ticket records (Administrator)         |
+| Command         | Description                                                                    |
+| --------------- | ------------------------------------------------------------------------------ |
+| `/ticket-setup` | Set the category and support role for the ticket system (Manage Server)        |
+| `/ticket-panel` | Post the ticket panel embed with an Open Ticket button in the current channel  |
+| `/ticket-close` | Close the current ticket channel — usable by the ticket owner or support staff |
+| `/ticket-stats` | Show total, open, and closed ticket counts for this server (Manage Server)     |
+| `/ticket-reset` | Reset the ticket counter to 0 and clear all ticket records (Administrator)     |
+
+
+### 🏷️ Roles
+
+
+| Command                | Description                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| `/reactionrole setup`  | Post a custom embed in the current channel to use as the reaction role panel   |
+| `/reactionrole add`    | Bind an emoji on a message to a role — bot reacts automatically (Manage Roles) |
+| `/reactionrole remove` | Remove an emoji→role binding from a message (Manage Roles)                     |
+| `/reactionrole list`   | List all reaction role bindings configured for this server (Manage Roles)      |
 
 
 ### ⚙️ Settings
