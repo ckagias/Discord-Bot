@@ -3,9 +3,18 @@ const { getLogChannel } = require('../utils/logger');
 
 module.exports = {
     name: 'voiceStateUpdate',
-    async execute(oldState, newState) {
+    async execute(oldState, newState, client) {
         const member = newState.member ?? oldState.member;
         if (!member || member.user.bot) return;
+
+        if (oldState.channelId && client.tempVCs?.has(oldState.channelId)) {
+            const channel = oldState.channel;
+            if (channel && channel.members.size === 0) {
+                client.tempVCs.delete(oldState.channelId);
+                await channel.delete().catch(() => {});
+            }
+        }
+
 
         const logChannel = await getLogChannel(member.guild).catch(() => null);
         if (!logChannel) return;

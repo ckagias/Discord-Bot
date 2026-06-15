@@ -16,13 +16,13 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 
 ## Features
 
-**62+** commands across **8** categories:
+**64+** commands across **8** categories:
 
 - 🎉 **Fun:** `8ball`, `dare`, `truth`, `gayrate`, `poll`
 - ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github` and **9** more.
 - ⏫ **Leveling:** `leaderboard`, `level`, `toggleleveling`
 - 🎵 **Music:** `play`, `skip`, `pause`, `resume`, `stop` and **4** more.
-- 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`, `snipe`
+- 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`, `snipe` and **1** more.
 - 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **14** more.
 - 🎮 **Minigames:** `gamble`, `coinflip`, `rps`
 - 🎫 **Tickets:** `ticket setup`, `ticket panel`, `ticket close`, `ticket stats`, `ticket reset`
@@ -61,23 +61,23 @@ Other highlights:
 ### ℹ️ Info
 
 
-| Command          | Description                                                                                         |
-| ---------------- | --------------------------------------------------------------------------------------------------- |
-| `/avatar global` | Show a user's global avatar                                                                         |
-| `/avatar server` | Show a user's server-specific avatar                                                                |
-| `/server info`   | Display detailed server information                                                                 |
+| Command          | Description                                                                                                                      |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `/avatar global` | Show a user's global avatar                                                                                                      |
+| `/avatar server` | Show a user's server-specific avatar                                                                                             |
+| `/server info`   | Display detailed server information                                                                                              |
 | `/userinfo`      | Display detailed user info including status, activity, voice state, device, nickname, boosting, join position, badges, and roles |
-| `/ping`          | Show the bot's latency and API ping                                                                 |
-| `/uptime`        | Show how long the bot has been online                                                               |
-| `/help`          | Show bot info and system stats                                                                      |
-| `/commands`      | List all available commands by category                                                             |
-| `/weather`       | Show the current weather for a city                                                                 |
-| `/github`        | Show GitHub profile, repository stats, yearly contribution count, and contribution chart for a user |
-| `/invite`        | Generate a 7-day invite link for the current server                                                 |
-| `/link`          | Generate an invite link to add the bot to another server                                            |
-| `/botstats`      | Show bot performance stats, feature overview, and total command count                               |
-| `/server icon`   | Show the server's icon with download links                                                          |
-| `/server banner` | Show the server's banner with download links (requires server boost level 2+)                       |
+| `/ping`          | Show the bot's latency and API ping                                                                                              |
+| `/uptime`        | Show how long the bot has been online                                                                                            |
+| `/help`          | Show bot info and system stats                                                                                                   |
+| `/commands`      | List all available commands by category                                                                                          |
+| `/weather`       | Show the current weather for a city                                                                                              |
+| `/github`        | Show GitHub profile, repository stats, yearly contribution count, and contribution chart for a user                              |
+| `/invite`        | Generate a 7-day invite link for the current server                                                                              |
+| `/link`          | Generate an invite link to add the bot to another server                                                                         |
+| `/botstats`      | Show bot performance stats, feature overview, and total command count                                                            |
+| `/server icon`   | Show the server's icon with download links                                                                                       |
+| `/server banner` | Show the server's banner with download links (requires server boost level 2+)                                                    |
 
 
 ### ⏫ Leveling
@@ -109,14 +109,16 @@ Other highlights:
 ### 🔧 Utility
 
 
-| Command     | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `/afk`      | Set your AFK status (the bot notifies anyone who mentions you)  |
-| `/purge`    | Delete a number of messages (requires Manage Messages)          |
-| `/shorten`  | Shorten a URL using is.gd                                       |
-| `/slowmode` | Set the slowmode delay for a channel (requires Manage Channels) |
-| `/snipe delete` | Show the last deleted message in the current channel        |
-| `/snipe edit`   | Show the last edited message (before/after) in this channel |
+| Command          | Description                                                                        |
+| ---------------- | ---------------------------------------------------------------------------------- |
+| `/afk`           | Set your AFK status (the bot notifies anyone who mentions you)                     |
+| `/purge`         | Delete a number of messages (requires Manage Messages)                             |
+| `/shorten`       | Shorten a URL using is.gd                                                          |
+| `/slowmode`      | Set the slowmode delay for a channel (requires Manage Channels)                    |
+| `/tempvc create` | Create a temporary voice channel in your current category; auto-deletes when empty |
+| `/tempvc invite` | Invite a user to your locked temp VC (owner only)                                  |
+| `/snipe delete`  | Show the last deleted message in the current channel                               |
+| `/snipe edit`    | Show the last edited message (before/after) in this channel                        |
 
 
 ### 🎮 Minigames
