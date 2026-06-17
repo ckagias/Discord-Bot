@@ -98,7 +98,7 @@ Other highlights:
 
 | Command       | Description                                                |
 | ------------- | ---------------------------------------------------------- |
-| `/play`       | Play a song or playlist from YouTube, SoundCloud, and more |
+| `/play`       | Play a song or playlist from YouTube, SoundCloud, Spotify  |
 | `/skip`       | Skip the current track                                     |
 | `/pause`      | Pause the current track                                    |
 | `/resume`     | Resume playback                                            |

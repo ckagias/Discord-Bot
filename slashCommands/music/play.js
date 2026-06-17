@@ -1,10 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { formatDuration } = require('../../utils/music');
+const { formatDuration, SPOTIFY_TRACK_URL, SPOTIFY_OTHER_URL, resolveSpotifyTrackQuery } = require('../../utils/music');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('play')
-        .setDescription('Play a song or playlist from YouTube, SoundCloud, and more.')
+        .setDescription('Play a song or playlist from YouTube, Spotify, SoundCloud, and more.')
         .addStringOption(option =>
             option.setName('query')
                 .setDescription('Song name or URL')
@@ -26,7 +26,21 @@ module.exports = {
             return interaction.editReply({ content: 'I\'m already playing in a different voice channel.' });
         }
 
-        const query = interaction.options.getString('query');
+        let query = interaction.options.getString('query');
+
+        if (SPOTIFY_OTHER_URL.test(query)) {
+            return interaction.editReply({ content: 'Spotify album, playlist, and artist links aren\'t supported yet — please use a track link or a search query.' });
+        }
+
+        let searchedFromSpotify = false;
+        if (SPOTIFY_TRACK_URL.test(query)) {
+            const resolved = await resolveSpotifyTrackQuery(query).catch(() => null);
+            if (!resolved) {
+                return interaction.editReply({ content: 'Could not resolve that Spotify link.' });
+            }
+            query = resolved;
+            searchedFromSpotify = true;
+        }
 
         try {
             let player = client.lavalink.getPlayer(interaction.guild.id);
@@ -42,8 +56,9 @@ module.exports = {
 
             if (!player.connected) await player.connect();
 
+            const isUrl = !searchedFromSpotify && /^https?:\/\//i.test(query);
             const result = await player.search(
-                { query, source: 'ytsearch' },
+                isUrl ? { query } : { query, source: 'ytsearch' },
                 interaction.user
             );
 
