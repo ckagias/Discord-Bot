@@ -2,7 +2,7 @@
 
 ### A Discord bot built with [discord.js](https://github.com/discordjs/discord.js), Lavalink, and MongoDB
 
-[About](#about) • [Features](#features) • [Commands](#commands) • [Installation](#installation) • [Dependencies](#dependencies) • [License](#license)
+[About](#about) • [Features](#features) • [Commands](#commands) • [Installation](#installation) • [Dashboard](#dashboard) • [Dependencies](#dependencies) • [License](#license)
 
 ---
 
@@ -274,6 +274,32 @@ Other highlights:
 - Weather API key: [https://home.openweathermap.org/api_keys](https://home.openweathermap.org/api_keys)
 - MongoDB URL: [https://cloud.mongodb.com](https://cloud.mongodb.com)
 - GitHub token: [https://github.com/settings/tokens](https://github.com/settings/tokens)
+
+---
+
+## Dashboard
+
+An optional self-hosted web dashboard ([`dashboard/`](dashboard)) lets you manage your server's bot settings from the browser instead of slash commands only. It's built with Next.js, runs as an additional Docker Compose service alongside the bot, and shares the same MongoDB database — so it talks only to **your own** bot instance. There is no centralized/shared backend; every self-hoster's dashboard is fully isolated to their own stack.
+
+Currently supports: Discord OAuth2 login, a picker for servers where you have Manage Server and the bot is present, and a settings page for leveling, log/welcome/farewell channels and messages, mute role, and ticket category/support role.
+
+### Enabling it
+
+1. In your `.env`, fill in the dashboard-specific variables (see `.env.example`):
+   ```env
+   CLIENT_SECRET=your_discord_application_client_secret
+   SESSION_SECRET=a_long_random_string_at_least_32_chars
+   DASHBOARD_URL=http://localhost:3000
+   ```
+   `CLIENT_SECRET` is found on the same [Discord Developer Portal](https://discord.com/developers/applications) page as your bot token and Client ID, under OAuth2.
+2. In the Discord Developer Portal, under your application's **OAuth2** settings, add a redirect:
+   ```
+   http://localhost:3000/api/auth/callback
+   ```
+   (replace with your `DASHBOARD_URL` if different, e.g. when deploying behind a domain)
+3. Start everything with `npm start` / `./start.sh` as usual — the `dashboard` service starts alongside `bot`, `mongodb`, and `lavalink`, and is reachable at `http://localhost:3000`.
+
+The dashboard is entirely optional — the bot runs fine standalone if you never set these variables or never visit the dashboard URL.
 
 ---
 
