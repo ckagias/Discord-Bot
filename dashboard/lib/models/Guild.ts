@@ -13,6 +13,15 @@ export interface GuildDoc {
   ticketCategoryId: string | null;
   ticketSupportRoleId: string | null;
   ticketCount: number;
+  automodEnabled: boolean;
+  automodBannedWords: boolean;
+  automodSpam: boolean;
+  automodMentions: boolean;
+  automodInvites: boolean;
+  automodAction: "delete" | "warn" | "timeout";
+  automodTimeoutSeconds: number;
+  automodBannedWordList: string[];
+  automodMentionLimit: number;
 }
 
 const guildSchema = new Schema<GuildDoc>({
@@ -27,6 +36,15 @@ const guildSchema = new Schema<GuildDoc>({
   ticketCategoryId: { type: String, default: null },
   ticketSupportRoleId: { type: String, default: null },
   ticketCount: { type: Number, default: 0 },
+  automodEnabled: { type: Boolean, default: false },
+  automodBannedWords: { type: Boolean, default: false },
+  automodSpam: { type: Boolean, default: false },
+  automodMentions: { type: Boolean, default: false },
+  automodInvites: { type: Boolean, default: false },
+  automodAction: { type: String, default: "delete" },
+  automodTimeoutSeconds: { type: Number, default: 300 },
+  automodBannedWordList: { type: [String], default: [] },
+  automodMentionLimit: { type: Number, default: 5 },
 });
 
 export default models.Guild || model<GuildDoc>("Guild", guildSchema);

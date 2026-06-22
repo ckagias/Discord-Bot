@@ -8,6 +8,8 @@ const STYLES = {
     "rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-black outline-none transition-colors focus:border-[#5865F2] dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50",
   input:
     "rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-black outline-none transition-colors focus:border-[#5865F2] dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50",
+  textarea:
+    "min-h-24 resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-black outline-none transition-colors focus:border-[#5865F2] dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50",
   checkboxRow: "flex items-center justify-between gap-4",
   checkboxText: "flex flex-col gap-1",
   toggleLabel: "relative inline-flex h-6 w-11 shrink-0 cursor-pointer",
@@ -100,6 +102,65 @@ export function RoleField({
           </option>
         ))}
       </select>
+    </FieldShell>
+  );
+}
+
+export function SelectField({
+  label,
+  description,
+  name,
+  defaultValue,
+  options,
+  onChange,
+}: {
+  label: string;
+  description?: string;
+  name: string;
+  defaultValue: string;
+  options: { value: string; label: string }[];
+  onChange?: (value: string) => void;
+}) {
+  return (
+    <FieldShell label={label} description={description}>
+      <select
+        key={defaultValue}
+        name={name}
+        defaultValue={defaultValue}
+        className={STYLES.select}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </FieldShell>
+  );
+}
+
+export function TextAreaField({
+  label,
+  description,
+  name,
+  defaultValue,
+  onChange,
+}: {
+  label: string;
+  description?: string;
+  name: string;
+  defaultValue: string;
+  onChange?: (value: string) => void;
+}) {
+  return (
+    <FieldShell label={label} description={description}>
+      <textarea
+        name={name}
+        defaultValue={defaultValue}
+        className={STYLES.textarea}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+      />
     </FieldShell>
   );
 }

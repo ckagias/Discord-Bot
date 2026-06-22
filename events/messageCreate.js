@@ -2,6 +2,7 @@ const LevelSchema = require('../models/LevelSchema');
 const GuildSchema = require('../models/GuildSchema');
 const AfkSchema = require('../models/AfkSchema');
 const TriggerSchema = require('../models/TriggerSchema');
+const { runAutoMod } = require('../utils/automod');
 
 const xp_cooldown_ms = 60_000;
 
@@ -13,6 +14,23 @@ module.exports = {
         if (!message.guild) return;
 
         const { author, guild, channel } = message;
+
+        let guildData;
+        try {
+            guildData = await GuildSchema.findOneAndUpdate(
+                { guildId: guild.id },
+                { $setOnInsert: { guildId: guild.id } },
+                { upsert: true, new: true }
+            );
+        } catch (error) {
+            console.error('[messageCreate] Failed to load guild settings:', error);
+        }
+
+        // Auto-moderation — runs before triggers/leveling so a deleted message doesn't get processed further
+        if (guildData?.automodEnabled) {
+            const actioned = await runAutoMod(message, guildData);
+            if (actioned) return;
+        }
 
         // Trigger check
         try {
@@ -75,12 +93,6 @@ module.exports = {
         }
 
         try {
-            const guildData = await GuildSchema.findOneAndUpdate(
-                { guildId: guild.id },
-                { $setOnInsert: { guildId: guild.id } },
-                { upsert: true, new: true }
-            );
-
             if (!guildData?.levelingEnabled) return;
 
             const xpGained = Math.floor(Math.random() * 11) + 15;

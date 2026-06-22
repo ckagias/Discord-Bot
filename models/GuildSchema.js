@@ -12,6 +12,15 @@ const guildSchema = new Schema({
     ticketCategoryId: { type: String, default: null },
     ticketSupportRoleId: { type: String, default: null },
     ticketCount: { type: Number, default: 0 },
+    automodEnabled: { type: Boolean, default: false },
+    automodBannedWords: { type: Boolean, default: false },
+    automodSpam: { type: Boolean, default: false },
+    automodMentions: { type: Boolean, default: false },
+    automodInvites: { type: Boolean, default: false },
+    automodAction: { type: String, default: 'delete' },
+    automodTimeoutSeconds: { type: Number, default: 300 },
+    automodBannedWordList: { type: [String], default: [] },
+    automodMentionLimit: { type: Number, default: 5 },
 });
 
 module.exports = model('Guild', guildSchema);

@@ -6,7 +6,7 @@ const STYLES = {
   form: "flex flex-col gap-6 max-w-xl",
   footer: "flex items-center gap-3",
   submitButton:
-    "self-start rounded-full bg-[#5865F2] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#4752c4] disabled:cursor-not-allowed disabled:bg-zinc-300 disabled:text-zinc-500 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600",
+    "cursor-pointer self-start rounded-full bg-[#5865F2] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#4752c4] disabled:cursor-not-allowed disabled:bg-zinc-300 disabled:text-zinc-500 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600",
   savedText: "text-sm text-green-600 dark:text-green-400",
   errorText: "text-sm text-red-600 dark:text-red-400",
 };
