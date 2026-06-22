@@ -31,6 +31,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 Other highlights:
 
 - Full moderation suite with role hierarchy checks, bot capability guards, and runtime permission checks on every command
+- Configurable auto-moderation: filters for banned words, spam/flood, excessive mentions, and invite links, with a per-server action (delete, delete + warn, or delete + timeout), DM notice to the affected user, and exemptions for admins/moderators — managed from the dashboard
 - Trigger system: server admins configure keyword and the response for that word, bot replies when the word appears standalone in a message (Unicode-safe, works with Greek and other non-ASCII languages)
 - Mute system using a configurable muted role with automatic channel-level permission overwrites so the mute holds regardless of other roles
 - Server event logger that logs message deletes/edits, joins, leaves, kicks, bans, nickname changes, role updates, and voice activity to a configurable channel
@@ -148,7 +149,9 @@ Other highlights:
 | `/kick`          | Kick a member from the server (Kick Members)                                        |
 | `/ban`           | Ban a member from the server with optional message deletion (Ban Members)           |
 | `/unban`         | Unban a user by ID (Ban Members)                                                    |
-| `/timeout`       | Temporarily timeout a member for a set duration (Moderate Members)                  |
+| `/timeout add`   | Timeout a member for a set duration (Moderate Members)                              |
+| `/timeout edit`  | Change the duration of a member's active timeout (Moderate Members)                 |
+| `/timeout remove`| Remove an active timeout from a member (Moderate Members)                           |
 | `/mute`          | Mute a member using the configured mute role (Moderate Members)                     |
 | `/unmute`        | Unmute a member by removing the mute role (Moderate Members)                        |
 | `/setmuterole`   | Set the role to assign when a member is muted (Manage Server)                       |
@@ -158,12 +161,12 @@ Other highlights:
 | `/addtrigger`    | Add a keyword and the bot's response to it (Manage Messages)                        |
 | `/removetrigger` | Remove a trigger keyword (Manage Messages)                                          |
 | `/triggers`      | List all trigger keywords configured for this server                                |
-| `/setlog`        | Set the channel where server events will be logged (Manage Server)                  |
-| `/unsetlog`      | Disable event logging for this server (Manage Server)                               |
-| `/setwelcome`    | Set the channel and optional message for member join announcements (Manage Server)  |
-| `/unsetwelcome`  | Disable welcome messages for this server (Manage Server)                            |
-| `/setfarewell`   | Set the channel and optional message for member leave announcements (Manage Server) |
-| `/unsetfarewell` | Disable farewell messages for this server (Manage Server)                           |
+| `/log set`       | Set the channel where server events will be logged (Manage Server)                  |
+| `/log unset`     | Disable event logging for this server (Manage Server)                               |
+| `/welcome set`   | Set the channel and optional message for member join announcements (Manage Server)  |
+| `/welcome unset` | Disable welcome messages for this server (Manage Server)                            |
+| `/farewell set`  | Set the channel and optional message for member leave announcements (Manage Server) |
+| `/farewell unset`| Disable farewell messages for this server (Manage Server)                           |
 
 
 ### 🎫 Tickets
@@ -281,7 +284,7 @@ Other highlights:
 
 An optional self-hosted web dashboard ([`dashboard/`](dashboard)) lets you manage your server's bot settings from the browser instead of slash commands only. It's built with Next.js, runs as an additional Docker Compose service alongside the bot, and shares the same MongoDB database — so it talks only to **your own** bot instance. There is no centralized/shared backend; every self-hoster's dashboard is fully isolated to their own stack.
 
-Currently supports: Discord OAuth2 login, a picker for servers where you have Manage Server and the bot is present, and a settings page for leveling, log/welcome/farewell channels and messages, mute role, and ticket category/support role.
+Currently supports: Discord OAuth2 login, a picker for servers where you have Manage Server and the bot is present, and a sidebar of independently-saved settings sections — General (leveling, log channel), Welcome & Farewell (channels and messages), Moderation (mute role), Auto-Mod (filters, action, banned word list), and Tickets (category and support role).
 
 ### Enabling it
 
