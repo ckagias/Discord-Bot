@@ -1,0 +1,40 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const STYLES = {
+  nav: "flex flex-col gap-1",
+  link: (active: boolean) =>
+    [
+      "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+      active
+        ? "bg-[#5865F2]/10 text-[#5865F2] dark:bg-[#5865F2]/15"
+        : "text-zinc-600 hover:bg-zinc-100 hover:text-black dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50",
+    ].join(" "),
+};
+
+const SECTIONS = [
+  { slug: "general", label: "General" },
+  { slug: "welcome", label: "Welcome & Farewell" },
+  { slug: "moderation", label: "Moderation" },
+  { slug: "tickets", label: "Tickets" },
+];
+
+export default function GuildNav({ guildId }: { guildId: string }) {
+  const pathname = usePathname();
+
+  return (
+    <nav className={STYLES.nav}>
+      {SECTIONS.map((section) => {
+        const href = `/dashboard/${guildId}/${section.slug}`;
+        const active = pathname?.startsWith(href);
+        return (
+          <Link key={section.slug} href={href} className={STYLES.link(!!active)}>
+            {section.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
