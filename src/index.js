@@ -36,6 +36,7 @@ const client = new Client({
 
     require('../handlers/eventHandler')(client);
     require('../handlers/slashCommandHandler')(client);
+    require('../handlers/componentHandler')(client);
     require('../handlers/lavalinkHandler')(client);
 
     // Forward raw gateway packets to Lavalink for voice state tracking
