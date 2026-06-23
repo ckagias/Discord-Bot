@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 const { isValidUrl } = require('../../utils/validate');
+const { parseHexColor } = require('../../utils/embeds');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -239,12 +240,8 @@ function parseMainFields(interaction) {
     const footerText  = interaction.fields.getTextInputValue('embed_footer').trim();
     const imageUrl    = interaction.fields.getTextInputValue('embed_image').trim();
 
-    let color = Math.floor(Math.random() * 0xFFFFFF);
-    if (colorRaw) {
-        const parsed = parseInt(colorRaw.replace('#', ''), 16);
-        if (!isNaN(parsed) && parsed >= 0 && parsed <= 0xFFFFFF) color = parsed;
-        else return { error: 'Invalid hex color. Use format `#5865F2`.' };
-    }
+    const { color, error } = parseHexColor(colorRaw);
+    if (error) return { error };
 
     if (imageUrl && !isValidUrl(imageUrl))
         return { error: 'Invalid image URL.' };

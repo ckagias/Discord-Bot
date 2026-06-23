@@ -31,7 +31,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 Other highlights:
 
 - Full moderation suite with role hierarchy checks, bot capability guards, and runtime permission checks on every command
-- Configurable auto-moderation: filters for banned words, spam/flood, excessive mentions, and invite links, with a per-server action (delete, delete + warn, or delete + timeout), DM notice to the affected user, and exemptions for admins/moderators — managed from the dashboard
+- Configurable auto-moderation: filters for banned words, spam/flood, excessive mentions, and invite links, with a per-server action (delete, delete + warn, or delete + timeout), DM notice to the affected user, and exemptions for admins/moderators managed from the dashboard
 - Trigger system: server admins configure keyword and the response for that word, bot replies when the word appears standalone in a message (Unicode-safe, works with Greek and other non-ASCII languages)
 - Mute system using a configurable muted role with automatic channel-level permission overwrites so the mute holds regardless of other roles
 - Server event logger that logs message deletes/edits, joins, leaves, kicks, bans, nickname changes, role updates, and voice activity to a configurable channel
@@ -97,38 +97,38 @@ Other highlights:
 ### 🎵 Music
 
 
-| Command       | Description                                                |
-| ------------- | ---------------------------------------------------------- |
-| `/play`       | Play a song or playlist from YouTube, SoundCloud, Spotify  |
-| `/skip`       | Skip the current track                                     |
-| `/pause`      | Pause the current track                                    |
-| `/resume`     | Resume playback                                            |
-| `/stop`       | Stop playback and clear the queue                          |
-| `/queue`      | Show the current queue                                     |
-| `/nowplaying` | Show details about the currently playing track             |
-| `/loop`       | Set loop mode (off, track, queue)                          |
-| `/volume`     | Set or check the playback volume                           |
+| Command       | Description                                               |
+| ------------- | --------------------------------------------------------- |
+| `/play`       | Play a song or playlist from YouTube, SoundCloud, Spotify |
+| `/skip`       | Skip the current track                                    |
+| `/pause`      | Pause the current track                                   |
+| `/resume`     | Resume playback                                           |
+| `/stop`       | Stop playback and clear the queue                         |
+| `/queue`      | Show the current queue                                    |
+| `/nowplaying` | Show details about the currently playing track            |
+| `/loop`       | Set loop mode (off, track, queue)                         |
+| `/volume`     | Set or check the playback volume                          |
 
 
 ### 🔧 Utility
 
 
-| Command          | Description                                                                        |
-| ---------------- | ---------------------------------------------------------------------------------- |
-| `/afk`           | Set your AFK status (the bot notifies anyone who mentions you)                     |
-| `/purge`         | Delete a number of messages (requires Manage Messages)                             |
-| `/shorten`       | Shorten a URL using is.gd                                                          |
-| `/slowmode`      | Set the slowmode delay for a channel (requires Manage Channels)                    |
-| `/tempvc create`   | Create a temporary voice channel in your current category; auto-deletes when empty |
-| `/tempvc invite`   | Invite a user to your locked temp VC (owner only)                                  |
-| `/snipe delete`    | Show the last deleted message in the current channel                               |
-| `/snipe edit`      | Show the last edited message (before/after) in this channel                        |
-| `/giveaway start`  | Start a timed giveaway with a prize, duration, and optional winner count (Manage Server) |
-| `/giveaway end`    | End an active giveaway early and pick winners immediately (Manage Server)          |
-| `/giveaway reroll` | Reroll winners for an ended giveaway (Manage Server)                               |
+| Command            | Description                                                                                          |
+| ------------------ | ---------------------------------------------------------------------------------------------------- |
+| `/afk`             | Set your AFK status (the bot notifies anyone who mentions you)                                       |
+| `/purge`           | Delete a number of messages (requires Manage Messages)                                               |
+| `/shorten`         | Shorten a URL using is.gd                                                                            |
+| `/slowmode`        | Set the slowmode delay for a channel (requires Manage Channels)                                      |
+| `/tempvc create`   | Create a temporary voice channel in your current category; auto-deletes when empty                   |
+| `/tempvc invite`   | Invite a user to your locked temp VC (owner only)                                                    |
+| `/snipe delete`    | Show the last deleted message in the current channel                                                 |
+| `/snipe edit`      | Show the last edited message (before/after) in this channel                                          |
+| `/giveaway start`  | Start a timed giveaway with a prize, duration, and optional winner count (Manage Server)             |
+| `/giveaway end`    | End an active giveaway early and pick winners immediately (Manage Server)                            |
+| `/giveaway reroll` | Reroll winners for an ended giveaway (Manage Server)                                                 |
 | `/embed create`    | Build and post a custom embed via a two-step modal (main fields + optional fields) (Manage Messages) |
-| `/embed edit`      | Edit an existing embed posted by the bot, pre-filled with current values (Manage Messages) |
-| `/embed help`      | Show an in-Discord formatting reference for markdown, links, mentions, and timestamps |
+| `/embed edit`      | Edit an existing embed posted by the bot, pre-filled with current values (Manage Messages)           |
+| `/embed help`      | Show an in-Discord formatting reference for markdown, links, mentions, and timestamps                |
 
 
 ### 🎮 Minigames
@@ -144,29 +144,29 @@ Other highlights:
 ### 🛡️ Moderation
 
 
-| Command          | Description                                                                         |
-| ---------------- | ----------------------------------------------------------------------------------- |
-| `/kick`          | Kick a member from the server (Kick Members)                                        |
-| `/ban`           | Ban a member from the server with optional message deletion (Ban Members)           |
-| `/unban`         | Unban a user by ID (Ban Members)                                                    |
-| `/timeout add`   | Timeout a member for a set duration (Moderate Members)                              |
-| `/timeout edit`  | Change the duration of a member's active timeout (Moderate Members)                 |
-| `/timeout remove`| Remove an active timeout from a member (Moderate Members)                           |
-| `/mute`          | Mute a member using the configured mute role (Moderate Members)                     |
-| `/unmute`        | Unmute a member by removing the mute role (Moderate Members)                        |
-| `/setmuterole`   | Set the role to assign when a member is muted (Manage Server)                       |
-| `/warn`          | Issue a warning to a member (Moderate Members)                                      |
-| `/warnings`      | View all warnings for a member (Moderate Members)                                   |
-| `/clearwarnings` | Clear all warnings for a member (Moderate Members)                                  |
-| `/addtrigger`    | Add a keyword and the bot's response to it (Manage Messages)                        |
-| `/removetrigger` | Remove a trigger keyword (Manage Messages)                                          |
-| `/triggers`      | List all trigger keywords configured for this server                                |
-| `/log set`       | Set the channel where server events will be logged (Manage Server)                  |
-| `/log unset`     | Disable event logging for this server (Manage Server)                               |
-| `/welcome set`   | Set the channel and optional message for member join announcements (Manage Server)  |
-| `/welcome unset` | Disable welcome messages for this server (Manage Server)                            |
-| `/farewell set`  | Set the channel and optional message for member leave announcements (Manage Server) |
-| `/farewell unset`| Disable farewell messages for this server (Manage Server)                           |
+| Command           | Description                                                                         |
+| ----------------- | ----------------------------------------------------------------------------------- |
+| `/kick`           | Kick a member from the server (Kick Members)                                        |
+| `/ban`            | Ban a member from the server with optional message deletion (Ban Members)           |
+| `/unban`          | Unban a user by ID (Ban Members)                                                    |
+| `/timeout add`    | Timeout a member for a set duration (Moderate Members)                              |
+| `/timeout edit`   | Change the duration of a member's active timeout (Moderate Members)                 |
+| `/timeout remove` | Remove an active timeout from a member (Moderate Members)                           |
+| `/mute`           | Mute a member using the configured mute role (Moderate Members)                     |
+| `/unmute`         | Unmute a member by removing the mute role (Moderate Members)                        |
+| `/setmuterole`    | Set the role to assign when a member is muted (Manage Server)                       |
+| `/warn`           | Issue a warning to a member (Moderate Members)                                      |
+| `/warnings`       | View all warnings for a member (Moderate Members)                                   |
+| `/clearwarnings`  | Clear all warnings for a member (Moderate Members)                                  |
+| `/addtrigger`     | Add a keyword and the bot's response to it (Manage Messages)                        |
+| `/removetrigger`  | Remove a trigger keyword (Manage Messages)                                          |
+| `/triggers`       | List all trigger keywords configured for this server                                |
+| `/log set`        | Set the channel where server events will be logged (Manage Server)                  |
+| `/log unset`      | Disable event logging for this server (Manage Server)                               |
+| `/welcome set`    | Set the channel and optional message for member join announcements (Manage Server)  |
+| `/welcome unset`  | Disable welcome messages for this server (Manage Server)                            |
+| `/farewell set`   | Set the channel and optional message for member leave announcements (Manage Server) |
+| `/farewell unset` | Disable farewell messages for this server (Manage Server)                           |
 
 
 ### 🎫 Tickets
@@ -209,7 +209,7 @@ Other highlights:
 
 1. **Clone the repository**
   ```bash
-   git clone https://github.com/ckagias/Discord-Bot.git
+   git clone https://github.com/ckagias/discord-bot.git
    cd discord-bot
   ```
 2. **Create a `.env` file**
@@ -246,7 +246,7 @@ Other highlights:
 
 1. **Clone and install dependencies**
   ```bash
-   git clone https://github.com/ckagias/Discord-Bot.git
+   git clone https://github.com/ckagias/discord-bot.git
    cd discord-bot
    npm install
   ```
@@ -261,7 +261,7 @@ Other highlights:
    WEATHER_API_KEY=your_openweathermap_api_key
    GITHUB_TOKEN=your_github_token
   ```
-3. **Start a Lavalink server** — see [lavalink-devs/Lavalink](https://github.com/lavalink-devs/Lavalink) for setup
+3. **Start a Lavalink server** (see [lavalink-devs/Lavalink](https://github.com/lavalink-devs/Lavalink) for setup)
 4. **Register slash commands**
   ```bash
    node src/cmd.js
@@ -282,27 +282,27 @@ Other highlights:
 
 ## Dashboard
 
-An optional self-hosted web dashboard ([`dashboard/`](dashboard)) lets you manage your server's bot settings from the browser instead of slash commands only. It's built with Next.js, runs as an additional Docker Compose service alongside the bot, and shares the same MongoDB database — so it talks only to **your own** bot instance. There is no centralized/shared backend; every self-hoster's dashboard is fully isolated to their own stack.
+An optional self-hosted web dashboard (`[dashboard/](dashboard)`) lets you manage your server's bot settings from the browser instead of slash commands only. It's built with Next.js, runs as an additional Docker Compose service alongside the bot, and shares the same MongoDB database so it talks only to **your own** bot instance. There is no centralized/shared backend, every self-hoster's dashboard is fully isolated to their own stack.
 
-Currently supports: Discord OAuth2 login, a picker for servers where you have Manage Server and the bot is present, and a sidebar of independently-saved settings sections — General (leveling, log channel), Welcome & Farewell (channels and messages), Moderation (mute role), Auto-Mod (filters, action, banned word list), and Tickets (category and support role).
+Currently supports: Discord OAuth2 login, a picker for servers where you have Manage Server and the bot is present, and a sidebar of independently-saved settings sections. General (leveling, log channel), Welcome & Farewell (channels and messages), Moderation (mute role), Auto-Mod (filters, action, banned word list), and Tickets (category and support role).
 
 ### Enabling it
 
 1. In your `.env`, fill in the dashboard-specific variables (see `.env.example`):
-   ```env
+  ```env
    CLIENT_SECRET=your_discord_application_client_secret
    SESSION_SECRET=a_long_random_string_at_least_32_chars
    DASHBOARD_URL=http://localhost:3000
-   ```
+  ```
    `CLIENT_SECRET` is found on the same [Discord Developer Portal](https://discord.com/developers/applications) page as your bot token and Client ID, under OAuth2.
 2. In the Discord Developer Portal, under your application's **OAuth2** settings, add a redirect:
-   ```
+  ```
    http://localhost:3000/api/auth/callback
-   ```
+  ```
    (replace with your `DASHBOARD_URL` if different, e.g. when deploying behind a domain)
 3. Start everything with `npm start` / `./start.sh` as usual — the `dashboard` service starts alongside `bot`, `mongodb`, and `lavalink`, and is reachable at `http://localhost:3000`.
 
-The dashboard is entirely optional — the bot runs fine standalone if you never set these variables or never visit the dashboard URL.
+The dashboard is entirely optional, the bot runs fine standalone if you never set these variables or never visit the dashboard URL.
 
 ---
 

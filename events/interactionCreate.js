@@ -1,5 +1,6 @@
 const { PermissionFlagsBits, ChannelType, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { isValidUrl } = require('../utils/validate');
+const { parseHexColor } = require('../utils/embeds');
 const GuildSchema = require('../models/GuildSchema');
 const TicketSchema = require('../models/TicketSchema');
 const GiveawaySchema = require('../models/GiveawaySchema');
@@ -75,12 +76,8 @@ async function handleReactionRoleSetup(interaction) {
     const footerText  = interaction.fields.getTextInputValue('rr_footer').trim();
     const thumbnail   = interaction.fields.getTextInputValue('rr_thumbnail').trim();
 
-    let color = Math.floor(Math.random() * 0xFFFFFF);
-    if (colorRaw) {
-        const parsed = parseInt(colorRaw.replace('#', ''), 16);
-        if (!isNaN(parsed) && parsed >= 0 && parsed <= 0xFFFFFF) color = parsed;
-        else return interaction.editReply({ content: 'Invalid hex color. Use format `#5865F2`.' });
-    }
+    const { color, error } = parseHexColor(colorRaw);
+    if (error) return interaction.editReply({ content: error });
 
     if (thumbnail && !isValidUrl(thumbnail))
         return interaction.editReply({ content: 'Invalid thumbnail URL.' });
@@ -235,43 +232,6 @@ async function getExistingFields(interaction, parts) {
         return message?.embeds[0]?.fields ?? [];
     } catch {
         return [];
-    }
-}
-
-async function handleEmbedFieldsModal(interaction) {
-    await interaction.deferReply({ ephemeral: true });
-
-    const { parseFieldLines, buildEmbed } = require('../slashCommands/utility/embed');
-
-    const draftKey = interaction.user.id;
-    const draft = interaction.client.embedDrafts?.get(draftKey);
-    if (!draft) return interaction.editReply({ content: 'Your embed draft expired. Please run `/embed create` again.' });
-
-    interaction.client.embedDrafts.delete(draftKey);
-
-    const fields = parseFieldLines(interaction);
-    const embed  = buildEmbed(draft.result, fields);
-
-    const parts  = interaction.customId.split(':');
-    const isEdit = parts[1] === 'edit';
-
-    if (isEdit) {
-        const channelId = parts[2];
-        const messageId = parts[3];
-        const channel = await interaction.guild.channels.fetch(channelId).catch(() => null);
-        if (!channel) return interaction.editReply({ content: 'Could not find the channel.' });
-        const message = await channel.messages.fetch(messageId).catch(() => null);
-        if (!message) return interaction.editReply({ content: 'Could not find the message.' });
-
-        await message.edit({ embeds: [embed] });
-        return interaction.editReply({ content: 'Embed updated.' });
-    } else {
-        const channelId = parts[2];
-        const channel = await interaction.guild.channels.fetch(channelId).catch(() => null);
-        if (!channel) return interaction.editReply({ content: 'Could not find the target channel.' });
-
-        const sent = await channel.send({ embeds: [embed] });
-        return interaction.editReply({ content: `Embed posted in ${channel}. Message ID: \`${sent.id}\`` });
     }
 }
 
