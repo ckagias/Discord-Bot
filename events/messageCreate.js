@@ -132,6 +132,14 @@ module.exports = {
                     await channel.send(
                         `🎉 Congratulations ${author}! You leveled up to **Level ${levelled.level}**!`
                     ).catch(() => {});
+
+                    const roleMapping = guildData.levelRoles?.find(lr => lr.level === levelled.level);
+                    if (roleMapping) {
+                        const role = guild.roles.cache.get(roleMapping.roleId);
+                        if (role && message.member && !message.member.roles.cache.has(role.id)) {
+                            await message.member.roles.add(role, `Reached level ${levelled.level}`).catch(() => {});
+                        }
+                    }
                 }
             }
         } catch (error) {

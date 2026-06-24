@@ -133,6 +133,7 @@ export interface DiscordChannel {
 export interface DiscordRole {
   id: string;
   name: string;
+  managed: boolean;
 }
 
 // Uses the bot token — server-only, never sent to the browser.

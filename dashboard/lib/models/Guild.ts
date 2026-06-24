@@ -7,6 +7,11 @@ export interface WarnThreshold {
   duration: number | null;
 }
 
+export interface LevelRole {
+  level: number;
+  roleId: string;
+}
+
 export interface GuildDoc {
   guildId: string;
   levelingEnabled: boolean;
@@ -29,6 +34,7 @@ export interface GuildDoc {
   automodBannedWordList: string[];
   automodMentionLimit: number;
   warnThresholds: WarnThreshold[];
+  levelRoles: LevelRole[];
 }
 
 const guildSchema = new Schema<GuildDoc>({
@@ -59,6 +65,16 @@ const guildSchema = new Schema<GuildDoc>({
         count:    { type: Number, required: true },
         action:   { type: String, required: true },
         duration: { type: Number, default: null },
+      },
+    ],
+    default: [],
+  },
+  levelRoles: {
+    type: [
+      {
+        _id: false,
+        level:  { type: Number, required: true },
+        roleId: { type: String, required: true },
       },
     ],
     default: [],

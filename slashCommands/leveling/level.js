@@ -1,47 +1,105 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const LevelSchema = require('../../models/LevelSchema');
+const { getGuildConfig } = require('../../utils/guildConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('level')
-        .setDescription("Check your (or another user's) current level and XP progress.")
-        .addUserOption(option =>
-            option.setName('user')
-                .setDescription('The user to look up (leave blank to check yourself)')
-                .setRequired(false)),
+        .setDescription("Check or set a member's level.")
+        .addSubcommand(sub =>
+            sub.setName('check')
+                .setDescription("Check your (or another user's) current level and XP progress.")
+                .addUserOption(option =>
+                    option.setName('user')
+                        .setDescription('The user to look up (leave blank to check yourself)')
+                        .setRequired(false)))
+        .addSubcommand(sub =>
+            sub.setName('set')
+                .setDescription("Set a member's level (resets their XP to 0 at that level).")
+                .addUserOption(option =>
+                    option.setName('user')
+                        .setDescription('The member whose level to set')
+                        .setRequired(true))
+                .addIntegerOption(option =>
+                    option.setName('level')
+                        .setDescription('The level to set')
+                        .setRequired(true)
+                        .setMinValue(0))),
 
     async execute(interaction) {
-        await interaction.deferReply();
+        const sub = interaction.options.getSubcommand();
 
-        const target = interaction.options.getUser('user') ?? interaction.user;
-        const { guild } = interaction;
+        if (sub === 'check') {
+            await interaction.deferReply();
 
-        const userData = await LevelSchema.findOne({ userId: target.id, guildId: guild.id });
+            const target = interaction.options.getUser('user') ?? interaction.user;
+            const { guild } = interaction;
 
-        if (!userData || userData.xp === 0 && userData.level === 0) {
-            return interaction.editReply({
-                content: `${target} hasn't earned any XP in **${guild.name}** yet!`,
-            });
+            const guildData = await getGuildConfig(guild.id);
+            if (!guildData?.levelingEnabled) {
+                return interaction.editReply({ content: 'Leveling is not enabled on this server.' });
+            }
+
+            const userData = await LevelSchema.findOne({ userId: target.id, guildId: guild.id });
+
+            if (!userData || userData.xp === 0 && userData.level === 0) {
+                return interaction.editReply({
+                    content: `${target} hasn't earned any XP in **${guild.name}** yet!`,
+                });
+            }
+
+            const xpNeeded = 100 * Math.pow(userData.level + 1, 2);
+            const progress = Math.min(userData.xp / xpNeeded, 1);
+            const filledBars = Math.round(progress * 20);
+            const progressBar = '█'.repeat(filledBars) + '░'.repeat(20 - filledBars);
+
+            const embed = new EmbedBuilder()
+                .setTitle(`${target.username}'s Level`)
+                .setThumbnail(target.displayAvatarURL({ dynamic: true }))
+                .setColor(0x5865F2)
+                .addFields(
+                    { name: '🏆 Level', value: `${userData.level}`, inline: true },
+                    { name: '✨ XP', value: `${userData.xp} / ${xpNeeded}`, inline: true },
+                    { name: '📊 Progress', value: `\`${progressBar}\` ${Math.round(progress * 100)}%` }
+                )
+                .setFooter({ text: guild.name, iconURL: guild.iconURL() })
+                .setTimestamp();
+
+            return interaction.editReply({ embeds: [embed] });
         }
 
-        const xpNeeded = 100 * Math.pow(userData.level + 1, 2);
-        const progress = Math.min(userData.xp / xpNeeded, 1);
-        const filledBars = Math.round(progress * 20);
-        const progressBar = '█'.repeat(filledBars) + '░'.repeat(20 - filledBars);
+        if (sub === 'set') {
+            if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
+                return interaction.reply({ content: 'You need the Manage Server permission to use this.', flags: MessageFlags.Ephemeral });
+            }
 
-        const embed = new EmbedBuilder()
-            .setTitle(`${target.username}'s Level`)
-            .setThumbnail(target.displayAvatarURL({ dynamic: true }))
-            .setColor(0x5865F2)
-            .addFields(
-                { name: '🏆 Level', value: `${userData.level}`, inline: true },
-                { name: '✨ XP', value: `${userData.xp} / ${xpNeeded}`, inline: true },
-                // Monospace backticks keep the bar evenly spaced
-                { name: '📊 Progress', value: `\`${progressBar}\` ${Math.round(progress * 100)}%` }
-            )
-            .setFooter({ text: guild.name, iconURL: guild.iconURL() })
-            .setTimestamp();
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        return interaction.editReply({ embeds: [embed] });
+            const target = interaction.options.getUser('user');
+            const level = interaction.options.getInteger('level');
+            const { guild } = interaction;
+
+            const [, guildData] = await Promise.all([
+                LevelSchema.findOneAndUpdate(
+                    { userId: target.id, guildId: guild.id },
+                    { $set: { level, xp: 0 } },
+                    { upsert: true }
+                ),
+                getGuildConfig(guild.id),
+            ]);
+
+            const member = await guild.members.fetch(target.id).catch(() => null);
+            if (member && guildData?.levelRoles?.length) {
+                const mappings = guildData.levelRoles.filter(lr => lr.level <= level);
+                for (const lr of mappings) {
+                    const role = guild.roles.cache.get(lr.roleId);
+                    if (role && !member.roles.cache.has(role.id)) {
+                        await member.roles.add(role, `Level set to ${level} by ${interaction.user.tag}`).catch(() => {});
+                    }
+                }
+            }
+
+            return interaction.editReply({ content: `Set **${target.username}**'s level to **${level}** (XP reset to 0).` });
+        }
     },
 };

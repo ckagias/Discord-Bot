@@ -32,6 +32,16 @@ const guildSchema = new Schema({
         ],
         default: [],
     },
+    levelRoles: {
+        type: [
+            {
+                _id: false,
+                level:  { type: Number, required: true },
+                roleId: { type: String, required: true },
+            },
+        ],
+        default: [],
+    },
 });
 
 module.exports = model('Guild', guildSchema);
