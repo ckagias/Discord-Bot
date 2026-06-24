@@ -9,7 +9,7 @@
   "scripts": {
     "start": "docker compose up -d",
     "stop": "docker compose down",
-    "restart": "docker compose run --rm bot node src/cmd.js && docker compose up --build -d",
+    "restart": "./restart.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

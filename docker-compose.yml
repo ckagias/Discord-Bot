@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   lavalink:
     image: ghcr.io/lavalink-devs/lavalink:4
