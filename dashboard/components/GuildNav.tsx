@@ -22,6 +22,7 @@ const SECTIONS = [
   { slug: "thresholds",     label: "Warn Thresholds" },
   { slug: "warnings",       label: "Warnings" },
   { slug: "leveling",       label: "Leveling" },
+  { slug: "starboard",      label: "Starboard" },
   { slug: "reaction-roles", label: "Reaction Roles" },
   { slug: "triggers",       label: "Triggers" },
   { slug: "cases",          label: "Case Log" },

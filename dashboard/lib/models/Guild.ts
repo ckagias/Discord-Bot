@@ -36,6 +36,11 @@ export interface GuildDoc {
   warnThresholds: WarnThreshold[];
   levelRoles: LevelRole[];
   levelUpChannelId: string | null;
+  starboardEnabled: boolean;
+  starboardChannelId: string | null;
+  starboardEmoji: string | null;
+  starboardThreshold: number;
+  starboardIgnoreNsfw: boolean;
 }
 
 const guildSchema = new Schema<GuildDoc>({
@@ -81,6 +86,11 @@ const guildSchema = new Schema<GuildDoc>({
     default: [],
   },
   levelUpChannelId: { type: String, default: null },
+  starboardEnabled:    { type: Boolean, default: false },
+  starboardChannelId:  { type: String,  default: null },
+  starboardEmoji:      { type: String,  default: "⭐" },
+  starboardThreshold:  { type: Number,  default: 3 },
+  starboardIgnoreNsfw: { type: Boolean, default: true },
 });
 
 export default models.Guild || model<GuildDoc>("Guild", guildSchema);

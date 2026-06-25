@@ -42,6 +42,7 @@ Other highlights:
 - Persistent XP leveling per server with atomic writes, admins can map levels to roles so members are automatically granted the matching role when they level up (roles stack and members keep all earned level roles), manageable via `/levelrole` or the dashboard — Leveling page also shows a read-only top-20 leaderboard sorted by level then XP
 - AFK system with return detection and mention notifications
 - Ticket system with private channels, support role pinging, auto-cleanup of stale tickets, and per-server stats
+- Starboard: messages that earn enough star (⭐) reactions are automatically reposted to a dedicated starboard channel. Τhe post updates live as reactions change and is removed if stars drop below the threshold; emoji, threshold, and NSFW-channel exclusion are fully configurable via `/starboard` or the dashboard Starboard page
 - Reaction roles with support for unicode and custom/animated emojis, bound per message and stored in MongoDB
 - Giveaway system with button-based entry, live entrant count, configurable winner count, and MongoDB persistence so active giveaways survive bot restarts
 - Temporary voice channels with optional locking, user limit, and invite-only access

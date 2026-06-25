@@ -1,5 +1,6 @@
 const { Events, PartialType } = require('discord.js');
 const ReactionRoleSchema = require('../models/ReactionRoleSchema');
+const { handleStarReaction } = require('../utils/starboard');
 
 module.exports = {
     name: Events.MessageReactionAdd,
@@ -22,17 +23,21 @@ module.exports = {
             emoji: emojiKey,
         }).catch(() => null);
 
-        if (!mapping) return;
+        if (mapping) {
+            const member = message.guild.members.cache.get(user.id)
+                ?? await message.guild.members.fetch(user.id).catch(() => null);
+            if (member) {
+                const role = message.guild.roles.cache.get(mapping.roleId);
+                if (role) {
+                    await member.roles.add(role).catch(err =>
+                        console.error(`[reactionRole] Failed to add role ${role.id} to ${user.id}:`, err)
+                    );
+                }
+            }
+        }
 
-        const member = message.guild.members.cache.get(user.id)
-            ?? await message.guild.members.fetch(user.id).catch(() => null);
-        if (!member) return;
-
-        const role = message.guild.roles.cache.get(mapping.roleId);
-        if (!role) return;
-
-        await member.roles.add(role).catch(err =>
-            console.error(`[reactionRole] Failed to add role ${role.id} to ${user.id}:`, err)
+        await handleStarReaction(reaction).catch(err =>
+            console.error('[starboard] Error handling reaction add:', err)
         );
     },
 };

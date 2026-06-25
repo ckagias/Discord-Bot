@@ -43,6 +43,11 @@ const guildSchema = new Schema({
         default: [],
     },
     levelUpChannelId: { type: String, default: null },
+    starboardEnabled:    { type: Boolean, default: false },
+    starboardChannelId:  { type: String,  default: null },
+    starboardEmoji:      { type: String,  default: '⭐' },
+    starboardThreshold:  { type: Number,  default: 3 },
+    starboardIgnoreNsfw: { type: Boolean, default: true },
 });
 
 module.exports = model('Guild', guildSchema);
