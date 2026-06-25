@@ -125,7 +125,7 @@ Other highlights:
 | Command            | Description                                                                                          |
 | ------------------ | ---------------------------------------------------------------------------------------------------- |
 | `/afk`             | Set your AFK status (the bot notifies anyone who mentions you)                                       |
-| `/purge`           | Delete a number of messages (requires Manage Messages)                                               |
+| `/purge`           | Delete messages from a channel, optionally filter by user, bots only, text content, or attachments (requires Manage Messages) |
 | `/shorten`         | Shorten a URL using is.gd                                                                            |
 | `/slowmode`        | Set the slowmode delay for a channel (requires Manage Channels)                                      |
 | `/tempvc create`   | Create a temporary voice channel in your current category; auto-deletes when empty                   |
