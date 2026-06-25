@@ -1,14 +1,25 @@
 const { EmbedBuilder } = require('discord.js');
 const { getLogChannel } = require('../utils/logger');
 const { getWelcomeConfig, formatMessage } = require('../utils/welcome');
+const { getGuildConfig } = require('../utils/guildConfig');
 
 module.exports = {
     name: 'guildMemberAdd',
     async execute(member) {
-        const [logChannel, welcomeConfig] = await Promise.all([
+        const [logChannel, welcomeConfig, guildConfig] = await Promise.all([
             getLogChannel(member.guild).catch(() => null),
             getWelcomeConfig(member.guild).catch(() => null),
+            getGuildConfig(member.guild.id).catch(() => null),
         ]);
+
+        if (guildConfig?.autoroleId) {
+            const role = member.guild.roles.cache.get(guildConfig.autoroleId);
+            if (role) {
+                await member.roles.add(role).catch(err =>
+                    console.error(`[autorole] Failed to assign role ${role.id} to ${member.id}:`, err)
+                );
+            }
+        }
 
         if (welcomeConfig) {
             await welcomeConfig.channel.send({ content: formatMessage(welcomeConfig.message, member) }).catch(() => {});

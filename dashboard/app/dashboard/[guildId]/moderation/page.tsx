@@ -8,6 +8,7 @@ import { updateModerationSettings } from "./actions";
 
 const STYLES = {
   heading: "mb-6 text-2xl font-semibold text-black dark:text-zinc-50",
+  stack: "flex flex-col gap-8 max-w-xl",
 };
 
 export default async function ModerationSettingsPage({
@@ -23,24 +24,42 @@ export default async function ModerationSettingsPage({
     fetchGuildRoles(guildId),
   ]);
 
-  const guild: Pick<GuildDoc, "muteRoleId"> = guildDoc ?? { muteRoleId: null };
+  const assignableRoles = roles.filter((r) => r.id !== guildId && !r.managed);
+
+  const guild: Pick<GuildDoc, "muteRoleId" | "autoroleId"> = guildDoc ?? {
+    muteRoleId: null,
+    autoroleId: null,
+  };
 
   return (
     <>
       <h1 className={STYLES.heading}>Moderation</h1>
-      <SectionForm action={updateModerationSettings.bind(null, guildId)}>
-        <SettingsCard
-          title="Mute role"
-          description="Role applied to members muted by moderation commands."
-        >
-          <RoleField
-            label="Mute role"
-            name="muteRoleId"
-            defaultValue={guild.muteRoleId}
-            roles={roles}
-          />
-        </SettingsCard>
-      </SectionForm>
+      <div className={STYLES.stack}>
+        <SectionForm action={updateModerationSettings.bind(null, guildId)}>
+          <SettingsCard
+            title="Mute role"
+            description="Role applied to members muted by moderation commands."
+          >
+            <RoleField
+              label="Mute role"
+              name="muteRoleId"
+              defaultValue={guild.muteRoleId}
+              roles={roles}
+            />
+          </SettingsCard>
+          <SettingsCard
+            title="Autorole"
+            description="Role automatically assigned to every new member when they join."
+          >
+            <RoleField
+              label="Autorole"
+              name="autoroleId"
+              defaultValue={guild.autoroleId}
+              roles={assignableRoles}
+            />
+          </SettingsCard>
+        </SectionForm>
+      </div>
     </>
   );
 }

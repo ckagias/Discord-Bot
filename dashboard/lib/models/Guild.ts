@@ -36,6 +36,7 @@ export interface GuildDoc {
   warnThresholds: WarnThreshold[];
   levelRoles: LevelRole[];
   levelUpChannelId: string | null;
+  autoroleId: string | null;
   starboardEnabled: boolean;
   starboardChannelId: string | null;
   starboardEmoji: string | null;
@@ -86,6 +87,7 @@ const guildSchema = new Schema<GuildDoc>({
     default: [],
   },
   levelUpChannelId: { type: String, default: null },
+  autoroleId:          { type: String,  default: null },
   starboardEnabled:    { type: Boolean, default: false },
   starboardChannelId:  { type: String,  default: null },
   starboardEmoji:      { type: String,  default: "⭐" },

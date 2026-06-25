@@ -56,6 +56,7 @@ export function ChannelField({
   return (
     <FieldShell label={label} description={description}>
       <select
+        key={defaultValue ?? ""}
         name={name}
         defaultValue={defaultValue ?? ""}
         className={STYLES.select}
@@ -90,6 +91,7 @@ export function RoleField({
   return (
     <FieldShell label={label} description={description}>
       <select
+        key={defaultValue ?? ""}
         name={name}
         defaultValue={defaultValue ?? ""}
         className={STYLES.select}
@@ -124,7 +126,7 @@ export function SelectField({
   return (
     <FieldShell label={label} description={description}>
       <select
-        key={defaultValue}
+        key={defaultValue ?? ""}
         name={name}
         defaultValue={defaultValue}
         className={STYLES.select}

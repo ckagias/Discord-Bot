@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 const STYLES = {
   form: "flex flex-col gap-6 max-w-xl",
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function SectionForm({ action, children }: Props) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [dirty, setDirty] = useState(false);
@@ -37,6 +39,7 @@ export default function SectionForm({ action, children }: Props) {
         await action(formData);
         setStatus("saved");
         setDirty(false);
+        router.refresh();
       } catch (err) {
         console.error(err);
         setStatus("error");
@@ -53,7 +56,7 @@ export default function SectionForm({ action, children }: Props) {
       }}
       className={STYLES.form}
     >
-      {children}
+      <div className="flex flex-col gap-6">{children}</div>
       <div className={STYLES.footer}>
         <button
           type="submit"

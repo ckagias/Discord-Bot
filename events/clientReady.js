@@ -2,6 +2,7 @@ const { ActivityType } = require('discord.js');
 const GiveawaySchema = require('../models/GiveawaySchema');
 const { endGiveaway } = require('../slashCommands/utility/giveaway');
 const { restorePunishments } = require('../utils/punishments');
+const GuildSchema = require('../models/GuildSchema');
 
 module.exports = {
     name: 'clientReady',
@@ -29,5 +30,34 @@ module.exports = {
         if (active.length) console.log(`[giveaway] Restored ${active.length} active giveaway(s).`);
 
         await restorePunishments(client);
+        await restoreAutoroles(client);
     }
 };
+
+async function restoreAutoroles(client) {
+    const configs = await GuildSchema.find({ autoroleId: { $ne: null } }).catch(() => []);
+    if (!configs.length) return;
+
+    let assigned = 0;
+    for (const config of configs) {
+        const guild = client.guilds.cache.get(config.guildId);
+        if (!guild) continue;
+
+        const role = guild.roles.cache.get(config.autoroleId);
+        if (!role) continue;
+
+        const members = await guild.members.fetch().catch(() => null);
+        if (!members) continue;
+
+        for (const member of members.values()) {
+            if (member.user.bot) continue;
+            if (member.roles.cache.has(role.id)) continue;
+            await member.roles.add(role).catch(err =>
+                console.error(`[autorole] Failed to assign role to ${member.id}:`, err)
+            );
+            assigned++;
+        }
+    }
+
+    if (assigned) console.log(`[autorole] Assigned missing autorole to ${assigned} member(s) on startup.`);
+}

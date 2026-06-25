@@ -12,9 +12,10 @@ export async function updateModerationSettings(guildId: string, formData: FormDa
 
   const update = {
     muteRoleId: emptyToNull(formData.get("muteRoleId")),
+    autoroleId: emptyToNull(formData.get("autoroleId")),
   };
 
-  await Guild.findOneAndUpdate({ guildId }, update, { upsert: true });
+  await Guild.findOneAndUpdate({ guildId }, { $set: update, $setOnInsert: { guildId } }, { upsert: true });
 
   revalidatePath(`/dashboard/${guildId}/moderation`);
 }
