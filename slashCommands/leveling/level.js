@@ -85,6 +85,11 @@ module.exports = {
             const xpInput = interaction.options.getInteger('xp') ?? 0;
             const { guild } = interaction;
 
+            const guildData = await getGuildConfig(guild.id);
+            if (!guildData?.levelingEnabled) {
+                return interaction.editReply({ content: 'Leveling is not enabled on this server.' });
+            }
+
             // XP must be strictly less than the threshold that would trigger a level-up.
             const xpNeeded = 100 * Math.pow(level + 1, 2);
             if (xpInput >= xpNeeded) {
@@ -93,14 +98,11 @@ module.exports = {
                 });
             }
 
-            const [, guildData] = await Promise.all([
-                LevelSchema.findOneAndUpdate(
-                    { userId: target.id, guildId: guild.id },
-                    { $set: { level, xp: xpInput } },
-                    { upsert: true }
-                ),
-                getGuildConfig(guild.id),
-            ]);
+            await LevelSchema.findOneAndUpdate(
+                { userId: target.id, guildId: guild.id },
+                { $set: { level, xp: xpInput } },
+                { upsert: true }
+            );
 
             const member = await guild.members.fetch(target.id).catch(() => null);
             if (member && guildData?.levelRoles?.length) {

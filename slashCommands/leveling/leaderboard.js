@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const LevelSchema = require('../../models/LevelSchema');
+const { getGuildConfig } = require('../../utils/guildConfig');
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 
@@ -13,6 +14,11 @@ module.exports = {
 
         const { guild } = interaction;
 
+        const guildData = await getGuildConfig(guild.id);
+        if (!guildData?.levelingEnabled) {
+            return interaction.editReply({ content: 'Leveling is not enabled on this server.' });
+        }
+
         const topUsers = await LevelSchema
             .find({ guildId: guild.id })
             .sort({ level: -1, xp: -1 })
@@ -24,22 +30,17 @@ module.exports = {
             });
         }
 
-        const lines = await Promise.all(
-            topUsers.map(async (entry, index) => {
-                const rank = MEDALS[index] ?? `**#${index + 1}**`;
+        // Bulk-fetch all top members in a single API call instead of one per entry.
+        const userIds = topUsers.map(u => u.userId);
+        const members = await guild.members.fetch({ user: userIds }).catch(() => null);
 
-                let displayName;
-                try {
-                    const member = await guild.members.fetch(entry.userId);
-                    displayName = member.displayName;
-                } catch {
-                    displayName = `Unknown User (${entry.userId})`;
-                }
-
-                const xpNeeded = 100 * Math.pow(entry.level + 1, 2);
-                return `${rank} **${displayName}** — Level ${entry.level} (${entry.xp}/${xpNeeded} XP)`;
-            })
-        );
+        const lines = topUsers.map((entry, index) => {
+            const rank = MEDALS[index] ?? `**#${index + 1}**`;
+            const member = members?.get(entry.userId);
+            const displayName = member ? member.displayName : `Unknown User (${entry.userId})`;
+            const xpNeeded = 100 * Math.pow(entry.level + 1, 2);
+            return `${rank} **${displayName}** — Level ${entry.level} (${entry.xp}/${xpNeeded} XP)`;
+        });
 
         const embed = new EmbedBuilder()
             .setTitle(`🏆 ${guild.name} Leaderboard`)
