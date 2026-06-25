@@ -9,12 +9,17 @@ module.exports = {
 
         if (!client.snipeCache) client.snipeCache = new Map();
         if (message.content || message.attachments?.size) {
+            const deletedAt = new Date();
             client.snipeCache.set(message.channelId, {
                 content: message.content || null,
                 attachmentURL: message.attachments?.first()?.url ?? null,
                 author: message.author,
-                deletedAt: new Date(),
+                deletedAt,
             });
+            setTimeout(() => {
+                const entry = client.snipeCache.get(message.channelId);
+                if (entry?.deletedAt === deletedAt) client.snipeCache.delete(message.channelId);
+            }, 5 * 60 * 1000);
         }
 
         const logChannel = await getLogChannel(message.guild).catch(() => null);

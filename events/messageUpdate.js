@@ -10,13 +10,18 @@ module.exports = {
 
         if (!client.editSnipeCache) client.editSnipeCache = new Map();
         if (oldMessage.content) {
+            const editedAt = new Date();
             client.editSnipeCache.set(newMessage.channelId, {
                 before: oldMessage.content,
                 after: newMessage.content,
                 author: newMessage.author,
-                editedAt: new Date(),
+                editedAt,
                 messageURL: newMessage.url,
             });
+            setTimeout(() => {
+                const entry = client.editSnipeCache.get(newMessage.channelId);
+                if (entry?.editedAt === editedAt) client.editSnipeCache.delete(newMessage.channelId);
+            }, 5 * 60 * 1000);
         }
 
         const logChannel = await getLogChannel(newMessage.guild).catch(() => null);
