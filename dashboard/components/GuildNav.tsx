@@ -20,6 +20,7 @@ const SECTIONS = [
   { slug: "moderation",     label: "Moderation" },
   { slug: "automod",        label: "Auto-Mod" },
   { slug: "thresholds",     label: "Warn Thresholds" },
+  { slug: "warnings",       label: "Warnings" },
   { slug: "leveling",       label: "Leveling" },
   { slug: "reaction-roles", label: "Reaction Roles" },
   { slug: "triggers",       label: "Triggers" },
