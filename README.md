@@ -39,7 +39,7 @@ Other highlights:
 - Server event logger that logs message deletes/edits, joins, leaves, kicks, bans, nickname changes, role updates, and voice activity to a configurable channel
 - Welcome/farewell messages, configurable per-server with custom messages supporting `{user}` and `{server}` placeholders
 - Per-server economy with passive chat earnings, daily streak bonuses (up to 3.5× on day 7+), hourly `/work` jobs with flavour text, a `/rob` command with risk/reward, transfers, admin `/eco` tools, and a leaderboard — minigames (gamble, coinflip, rps) all bet and pay out real credits atomically; economy leaderboard also visible in the dashboard
-- Persistent XP leveling per server with atomic writes; admins can map levels to roles so members are automatically granted the matching role when they level up (roles stack and members keep all earned level roles); manageable via `/levelrole` or the dashboard Level Roles page
+- Persistent XP leveling per server with atomic writes, admins can map levels to roles so members are automatically granted the matching role when they level up (roles stack and members keep all earned level roles), manageable via `/levelrole` or the dashboard — Leveling page also shows a read-only top-20 leaderboard sorted by level then XP
 - AFK system with return detection and mention notifications
 - Ticket system with private channels, support role pinging, auto-cleanup of stale tickets, and per-server stats
 - Reaction roles with support for unicode and custom/animated emojis, bound per message and stored in MongoDB
@@ -316,7 +316,7 @@ Other highlights:
 
 An optional self-hosted web dashboard (`[dashboard/](dashboard)`) lets you manage your server's bot settings from the browser instead of slash commands only. It's built with Next.js, runs as an additional Docker Compose service alongside the bot, and shares the same MongoDB database so it talks only to **your own** bot instance. There is no centralized/shared backend, every self-hoster's dashboard is fully isolated to their own stack.
 
-Currently supports: Discord OAuth2 login, a picker for servers where you have Manage Server and the bot is present, and a sidebar of independently-saved settings sections. General (log channel), Welcome & Farewell (channels and messages), Moderation (mute role), Auto-Mod (filters, action, banned word list), Warn Thresholds (auto-escalation rules), Leveling (enable toggle, level-up channel, level→role mappings), Reaction Roles (add/remove emoji→role bindings per message), Triggers (keyword→response pairs), Case Log (full mod action history with user ID filter and per-case deletion), Economy (credit leaderboard), and Tickets (category and support role).
+Currently supports: Discord OAuth2 login, a picker for servers where you have Manage Server and the bot is present, and a sidebar of independently-saved settings sections. General (log channel), Welcome & Farewell (channels and messages), Moderation (mute role), Auto-Mod (filters, action, banned word list), Warn Thresholds (auto-escalation rules), Leveling (enable toggle, level-up channel, level→role mappings, top-20 XP leaderboard), Reaction Roles (add/remove emoji→role bindings per message), Triggers (keyword→response pairs), Case Log (full mod action history with user ID filter and per-case deletion), Economy (credit leaderboard), and Tickets (category and support role).
 
 ### Enabling it
 
