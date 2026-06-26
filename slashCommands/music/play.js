@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const { formatDuration, SPOTIFY_TRACK_URL, SPOTIFY_OTHER_URL, resolveSpotifyTrackQuery } = require('../../utils/music');
 
 module.exports = {
@@ -12,35 +12,35 @@ module.exports = {
         ),
 
     async execute(interaction, client) {
-        await interaction.deferReply();
-
         const member = interaction.member;
         const voiceChannel = member.voice?.channel;
 
         if (!voiceChannel) {
-            return interaction.editReply({ content: 'You need to be in a voice channel first.' });
+            return interaction.reply({ content: 'You need to be in a voice channel first.', flags: MessageFlags.Ephemeral });
         }
 
         const botMember = interaction.guild.members.me;
         if (botMember.voice.channel && botMember.voice.channel.id !== voiceChannel.id) {
-            return interaction.editReply({ content: 'I\'m already playing in a different voice channel.' });
+            return interaction.reply({ content: 'I\'m already playing in a different voice channel.', flags: MessageFlags.Ephemeral });
         }
 
         let query = interaction.options.getString('query');
 
         if (SPOTIFY_OTHER_URL.test(query)) {
-            return interaction.editReply({ content: 'Spotify album, playlist, and artist links aren\'t supported yet — please use a track link or a search query.' });
+            return interaction.reply({ content: 'Spotify album, playlist, and artist links aren\'t supported yet — please use a track link or a search query.', flags: MessageFlags.Ephemeral });
         }
 
         let searchedFromSpotify = false;
         if (SPOTIFY_TRACK_URL.test(query)) {
             const resolved = await resolveSpotifyTrackQuery(query).catch(() => null);
             if (!resolved) {
-                return interaction.editReply({ content: 'Could not resolve that Spotify link.' });
+                return interaction.reply({ content: 'Could not resolve that Spotify link.', flags: MessageFlags.Ephemeral });
             }
             query = resolved;
             searchedFromSpotify = true;
         }
+
+        await interaction.deferReply();
 
         try {
             let player = client.lavalink.getPlayer(interaction.guild.id);

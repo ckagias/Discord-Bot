@@ -18,7 +18,7 @@ module.exports = {
             const geoRes = await axios.get(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(location)}&limit=5&appid=${apiKey}`);
 
             if (!geoRes.data.length) {
-                return interaction.reply('❌ City not found.');
+                return interaction.reply({ content: '❌ City not found.', flags: MessageFlags.Ephemeral });
             }
 
             const places = geoRes.data;
@@ -63,7 +63,7 @@ module.exports = {
         } catch (err) {
             console.error('[weather] Error:', err);
             if (!interaction.replied) {
-                await interaction.reply('❌ Error fetching weather data.');
+                await interaction.reply({ content: '❌ Error fetching weather data.', flags: MessageFlags.Ephemeral });
             }
         }
     }
@@ -96,6 +96,6 @@ async function sendWeather(interaction, place, apiKey) {
         }
     } catch (error) {
         console.error('[weather] sendWeather error:', error);
-        await interaction.followUp('❌ Failed to load weather details.');
+        await interaction.followUp({ content: '❌ Failed to load weather details.', flags: MessageFlags.Ephemeral });
     }
 };

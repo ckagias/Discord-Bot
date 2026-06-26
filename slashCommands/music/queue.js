@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const { formatDuration } = require('../../utils/music');
 
 const PAGE_SIZE = 10;
@@ -17,7 +17,7 @@ module.exports = {
         const player = client.lavalink.getPlayer(interaction.guild.id);
 
         if (!player || !player.queue.current) {
-            return interaction.reply({ content: 'Nothing is playing right now.' });
+            return interaction.reply({ content: 'Nothing is playing right now.', flags: MessageFlags.Ephemeral });
         }
 
         try {
@@ -26,7 +26,7 @@ module.exports = {
             const totalPages = Math.max(1, Math.ceil(queue.length / PAGE_SIZE));
 
             if (page >= totalPages) {
-                return interaction.reply({ content: `Page ${page + 1} doesn't exist. Max page is ${totalPages}.` });
+                return interaction.reply({ content: `Page ${page + 1} doesn't exist. Max page is ${totalPages}.`, flags: MessageFlags.Ephemeral });
             }
 
             const current = player.queue.current;
@@ -52,7 +52,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('[queue] Lavalink error:', error);
-            await interaction.reply({ content: 'Failed to fetch queue. Please try again.' }).catch(() => {});
+            await interaction.reply({ content: 'Failed to fetch queue. Please try again.', flags: MessageFlags.Ephemeral }).catch(() => {});
         }
     },
 };

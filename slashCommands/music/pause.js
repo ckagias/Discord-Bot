@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,11 +9,11 @@ module.exports = {
         const player = client.lavalink.getPlayer(interaction.guild.id);
 
         if (!player || !player.playing) {
-            return interaction.reply({ content: 'Nothing is playing right now.' });
+            return interaction.reply({ content: 'Nothing is playing right now.', flags: MessageFlags.Ephemeral });
         }
 
         if (player.paused) {
-            return interaction.reply({ content: '⏸️ The player is already paused.' });
+            return interaction.reply({ content: '⏸️ The player is already paused.', flags: MessageFlags.Ephemeral });
         }
 
         try {
@@ -26,7 +26,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('[pause] Lavalink error:', error);
-            await interaction.reply({ content: 'Failed to pause. Please try again.' }).catch(() => {});
+            await interaction.reply({ content: 'Failed to pause. Please try again.', flags: MessageFlags.Ephemeral }).catch(() => {});
         }
     },
 };

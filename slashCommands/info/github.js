@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder, MessageFlags } = require('discord.js');
 const { Resvg } = require('@resvg/resvg-js');
 
 module.exports = {
@@ -131,12 +131,12 @@ module.exports = {
 
         } catch (err) {
             if (err.response?.status === 404) {
-                await interaction.editReply(`GitHub user **${username}** was not found.`);
+                await interaction.editReply({ content: `GitHub user **${username}** was not found.`, flags: MessageFlags.Ephemeral });
             } else if (err.response?.status === 403) {
-                await interaction.editReply('GitHub API rate limit exceeded. Please try again later.');
+                await interaction.editReply({ content: 'GitHub API rate limit exceeded. Please try again later.', flags: MessageFlags.Ephemeral });
             } else {
                 console.error('[github] Error:', err);
-                await interaction.editReply('An error occurred while fetching GitHub data.');
+                await interaction.editReply({ content: 'An error occurred while fetching GitHub data.', flags: MessageFlags.Ephemeral });
             }
         }
     }

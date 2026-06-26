@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const mongoose = require('mongoose');
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
 
         try {
             if (mongoose.connection.readyState !== 1) {
-                return interaction.editReply('The bot is not currently connected to the database.');
+                return interaction.editReply({ content: 'The bot is not currently connected to the database.', flags: MessageFlags.Ephemeral });
             }
 
             const stats = await mongoose.connection.db.stats();
@@ -39,7 +39,7 @@ module.exports = {
 
         } catch (error) {
             console.error('[database] Error:', error);
-            await interaction.editReply('An error occurred while fetching database statistics.');
+            await interaction.editReply({ content: 'An error occurred while fetching database statistics.', flags: MessageFlags.Ephemeral });
         }
     },
 };

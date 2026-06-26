@@ -16,18 +16,18 @@ module.exports = {
                 .setMinValue(1)),
 
     async execute(interaction) {
-        await interaction.deferReply();
-
         const target = interaction.options.getUser('user');
         const amount = interaction.options.getInteger('amount');
 
         if (target.id === interaction.user.id) {
-            return interaction.editReply({ content: 'You cannot transfer credits to yourself.' });
+            return interaction.reply({ content: 'You cannot transfer credits to yourself.', flags: MessageFlags.Ephemeral });
         }
 
         if (target.bot) {
-            return interaction.editReply({ content: 'You cannot transfer credits to a bot.' });
+            return interaction.reply({ content: 'You cannot transfer credits to a bot.', flags: MessageFlags.Ephemeral });
         }
+
+        await interaction.deferReply();
 
         const senderWallet = await updateBalance(interaction.user.id, interaction.guild.id, -amount);
 

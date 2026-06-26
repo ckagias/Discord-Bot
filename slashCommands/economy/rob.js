@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const EconomySchema = require('../../models/EconomySchema');
 const { getWallet, updateBalance, formatBalance } = require('../../utils/economy');
 
@@ -17,16 +17,16 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
-        await interaction.deferReply();
-
         const target = interaction.options.getUser('user');
 
         if (target.id === interaction.user.id) {
-            return interaction.editReply({ content: 'You cannot rob yourself.' });
+            return interaction.reply({ content: 'You cannot rob yourself.', flags: MessageFlags.Ephemeral });
         }
         if (target.bot) {
-            return interaction.editReply({ content: 'You cannot rob a bot.' });
+            return interaction.reply({ content: 'You cannot rob a bot.', flags: MessageFlags.Ephemeral });
         }
+
+        await interaction.deferReply();
 
         // Cooldown check
         const robberWallet = await EconomySchema.findOneAndUpdate(

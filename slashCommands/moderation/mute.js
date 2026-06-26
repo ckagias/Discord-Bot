@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const { getGuildConfig } = require('../../utils/guildConfig');
 const PunishmentSchema = require('../../models/PunishmentSchema');
 const { parseDuration, formatDuration, schedulePunishment } = require('../../utils/punishments');
@@ -25,43 +25,43 @@ module.exports = {
     permissions: PermissionFlagsBits.ModerateMembers,
 
     async execute(interaction) {
-        await interaction.deferReply();
-
         const target = interaction.options.getMember('user');
         const durStr = interaction.options.getString('duration');
         const reason = interaction.options.getString('reason') ?? 'No reason provided';
 
         if (!target) {
-            return interaction.editReply({ content: 'That user is not in this server.' });
+            return interaction.reply({ content: 'That user is not in this server.', flags: MessageFlags.Ephemeral });
         }
 
         if (interaction.member.roles.highest.position <= target.roles.highest.position) {
-            return interaction.editReply({ content: 'You cannot mute someone with an equal or higher role.' });
+            return interaction.reply({ content: 'You cannot mute someone with an equal or higher role.', flags: MessageFlags.Ephemeral });
         }
 
         const guildData = await getGuildConfig(interaction.guild.id);
 
         if (!guildData?.muteRoleId) {
-            return interaction.editReply({ content: 'No mute role set. Use `/setmuterole` first.' });
+            return interaction.reply({ content: 'No mute role set. Use `/setmuterole` first.', flags: MessageFlags.Ephemeral });
         }
 
         const muteRole = interaction.guild.roles.cache.get(guildData.muteRoleId);
 
         if (!muteRole) {
-            return interaction.editReply({ content: 'The configured mute role no longer exists. Use `/setmuterole` to set a new one.' });
+            return interaction.reply({ content: 'The configured mute role no longer exists. Use `/setmuterole` to set a new one.', flags: MessageFlags.Ephemeral });
         }
 
         if (target.roles.cache.has(muteRole.id)) {
-            return interaction.editReply({ content: 'That user is already muted.' });
+            return interaction.reply({ content: 'That user is already muted.', flags: MessageFlags.Ephemeral });
         }
 
         let durationMs = null;
         if (durStr) {
             durationMs = parseDuration(durStr);
             if (!durationMs) {
-                return interaction.editReply({ content: 'Invalid duration format. Use a number followed by `s`, `m`, `h`, or `d` (e.g. `30m`).' });
+                return interaction.reply({ content: 'Invalid duration format. Use a number followed by `s`, `m`, `h`, or `d` (e.g. `30m`).', flags: MessageFlags.Ephemeral });
             }
         }
+
+        await interaction.deferReply();
 
         const textChannels = interaction.guild.channels.cache.filter(c => c.isTextBased());
         const voiceChannels = interaction.guild.channels.cache.filter(c => c.isVoiceBased());

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const { formatDuration } = require('../../utils/music');
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
         const player = client.lavalink.getPlayer(interaction.guild.id);
 
         if (!player || !player.queue.current) {
-            return interaction.reply({ content: '❌ Nothing is playing right now.' });
+            return interaction.reply({ content: '❌ Nothing is playing right now.', flags: MessageFlags.Ephemeral });
         }
 
         try {
@@ -35,7 +35,7 @@ module.exports = {
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
             console.error('[nowplaying] Lavalink error:', error);
-            await interaction.reply({ content: '❌ Failed to fetch track info. Please try again.' }).catch(() => {});
+            await interaction.reply({ content: '❌ Failed to fetch track info. Please try again.', flags: MessageFlags.Ephemeral }).catch(() => {});
         }
     },
 };
