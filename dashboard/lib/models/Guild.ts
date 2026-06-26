@@ -37,6 +37,7 @@ export interface GuildDoc {
   levelRoles: LevelRole[];
   levelUpChannelId: string | null;
   autoroleId: string | null;
+  tempVcCategoryId: string | null;
   starboardEnabled: boolean;
   starboardChannelId: string | null;
   starboardEmoji: string | null;
@@ -88,6 +89,7 @@ const guildSchema = new Schema<GuildDoc>({
   },
   levelUpChannelId: { type: String, default: null },
   autoroleId:          { type: String,  default: null },
+  tempVcCategoryId:    { type: String,  default: null },
   starboardEnabled:    { type: Boolean, default: false },
   starboardChannelId:  { type: String,  default: null },
   starboardEmoji:      { type: String,  default: "⭐" },

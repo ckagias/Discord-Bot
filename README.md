@@ -131,7 +131,8 @@ Other highlights:
 | `/purge`           | Delete messages from a channel, optionally filter by user, bots only, text content, or attachments (requires Manage Messages) |
 | `/shorten`         | Shorten a URL using is.gd                                                                            |
 | `/slowmode`        | Set the slowmode delay for a channel (requires Manage Channels)                                      |
-| `/tempvc create`   | Create a temporary voice channel in your current category; auto-deletes when empty                   |
+| `/tempvc setup`    | Set the category where temp VCs are created (Manage Server; also configurable via dashboard)          |
+| `/tempvc create`   | Create a temporary voice channel; auto-deletes when empty. Posts a control panel with Rename / Lock / Set Limit buttons for the owner. |
 | `/tempvc invite`   | Invite a user to your locked temp VC (owner only)                                                    |
 | `/snipe delete`    | Show the last deleted message in the current channel                                                 |
 | `/snipe edit`      | Show the last edited message (before/after) in this channel                                          |

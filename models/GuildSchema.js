@@ -44,6 +44,7 @@ const guildSchema = new Schema({
     },
     levelUpChannelId: { type: String, default: null },
     autoroleId:          { type: String,  default: null },
+    tempVcCategoryId:    { type: String,  default: null },
     starboardEnabled:    { type: Boolean, default: false },
     starboardChannelId:  { type: String,  default: null },
     starboardEmoji:      { type: String,  default: '⭐' },

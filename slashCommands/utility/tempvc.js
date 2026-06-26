@@ -1,4 +1,6 @@
 const { SlashCommandBuilder, ChannelType, PermissionFlagsBits, MessageFlags } = require('discord.js');
+const { buildPanel } = require('../../handlers/components/tempvcPanel');
+const { getGuildConfig, updateGuildConfig } = require('../../utils/guildConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,11 +29,35 @@ module.exports = {
                 .addUserOption(option =>
                     option.setName('user')
                         .setDescription('The user to invite')
-                        .setRequired(true))),
+                        .setRequired(true)))
+        .addSubcommand(sub =>
+            sub.setName('setup')
+                .setDescription('Set the category where temp VCs are created (Manage Server).')
+                .addChannelOption(option =>
+                    option.setName('category')
+                        .setDescription('The category to create temp VCs in (leave empty to clear).')
+                        .addChannelTypes(ChannelType.GuildCategory)
+                        .setRequired(false))),
 
     async execute(interaction) {
         const sub = interaction.options.getSubcommand();
         const member = interaction.member;
+
+        if (sub === 'setup') {
+            if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
+                return interaction.reply({ content: 'You need the **Manage Server** permission to configure temp VCs.', flags: MessageFlags.Ephemeral });
+            }
+
+            const category = interaction.options.getChannel('category');
+            await updateGuildConfig(interaction.guild.id, { tempVcCategoryId: category?.id ?? null });
+
+            return interaction.reply({
+                content: category
+                    ? `Temp VCs will now be created in the **${category.name}** category.`
+                    : 'Temp VC category cleared — channels will be created in the same category as the caller.',
+                flags: MessageFlags.Ephemeral,
+            });
+        }
 
         if (sub === 'create') {
             const voiceChannel = member.voice.channel;
@@ -42,6 +68,9 @@ module.exports = {
             const name = interaction.options.getString('name');
             const locked = interaction.options.getBoolean('locked') ?? false;
             const limit = interaction.options.getInteger('limit') ?? 0;
+
+            const config = await getGuildConfig(interaction.guild.id);
+            const parentId = config?.tempVcCategoryId ?? voiceChannel.parentId;
 
             const permissionOverwrites = [
                 {
@@ -63,7 +92,7 @@ module.exports = {
                 tempChannel = await interaction.guild.channels.create({
                     name,
                     type: ChannelType.GuildVoice,
-                    parent: voiceChannel.parentId,
+                    parent: parentId,
                     userLimit: limit,
                     permissionOverwrites,
                 });
@@ -77,6 +106,10 @@ module.exports = {
 
             await member.voice.setChannel(tempChannel).catch(err => {
                 console.error('[tempvc] Failed to move member:', err);
+            });
+
+            await tempChannel.send(buildPanel(tempChannel)).catch(err => {
+                console.error('[tempvc] Failed to send control panel:', err);
             });
 
             const limitText = limit === 0 ? 'unlimited' : `${limit}`;
