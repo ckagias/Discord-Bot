@@ -13,6 +13,7 @@ module.exports = {
         }
 
         try {
+            player.setData('manual_stop', true);
             await player.stopPlaying(true, true);
             await player.destroy();
 

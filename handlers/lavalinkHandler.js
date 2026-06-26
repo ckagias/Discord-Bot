@@ -43,11 +43,10 @@ module.exports = (client) => {
         if (channel) channel.send(`Now playing: **${track.info.title}** by **${track.info.author}**`);
     });
 
-    client.lavalink.on('trackEnd', (player) => {
-        if (player.queue.tracks.length === 0) {
-            const channel = client.channels.cache.get(player.textChannelId);
-            if (channel) channel.send('Queue finished. Leaving voice channel in 30 seconds.');
-        }
+    client.lavalink.on('queueEnd', (player) => {
+        if (player.getData('manual_stop')) return;
+        const channel = client.channels.cache.get(player.textChannelId);
+        if (channel) channel.send('Queue finished. Leaving voice channel in 30 seconds.');
     });
 
     client.lavalink.on('playerDestroy', (player) => {
