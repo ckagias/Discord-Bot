@@ -21,7 +21,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 - 🎉 **Fun:** `8ball`, `dare`, `truth`, `gayrate`, `poll`
 - ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github` and **9** more.
 - ⏫ **Leveling:** `leaderboard`, `level`, `toggleleveling`, `levelrole`, `levelchannel`
-- 🎵 **Music:** `play`, `skip`, `pause`, `resume`, `stop` and **5** more.
+- 🎵 **Music:** `play`, `skip`, `shuffle`, `pause`, `resume`, `stop` and **7** more.
 - 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`, `snipe` and **3** more.
 - 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **17** more.
 - 🎮 **Minigames:** `gamble`, `coinflip`, `rps`
@@ -118,6 +118,9 @@ Other highlights:
 | `/queue`      | Show the current queue                                    |
 | `/nowplaying` | Show details about the currently playing track            |
 | `/lyrics`     | Show lyrics for the currently playing song                |
+| `/skipto`     | Skip to a specific position in the queue                  |
+| `/remove`     | Remove a track from the queue by position                 |
+| `/shuffle`    | Shuffle the upcoming tracks in the queue                  |
 | `/loop`       | Set loop mode (off, track, queue)                         |
 | `/volume`     | Set or check the playback volume                          |
 
