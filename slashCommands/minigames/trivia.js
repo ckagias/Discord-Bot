@@ -5,7 +5,6 @@ const { updateBalance, formatBalance } = require('../../utils/economy');
 const REWARDS = { easy: 50, medium: 100, hard: 200 };
 const TIMEOUT_MS = 20_000;
 
-const DIFFICULTY_COLORS = { easy: 0x538d4e, medium: 0xe3a015, hard: 0xc0392b };
 
 function decode(str) {
     return str
@@ -88,7 +87,7 @@ module.exports = {
                 { name: 'Difficulty', value: diff.charAt(0).toUpperCase() + diff.slice(1), inline: true },
                 { name: 'Reward', value: `${formatBalance(reward)} coins`, inline: true },
             )
-            .setColor(DIFFICULTY_COLORS[diff] ?? Math.floor(Math.random() * 0xFFFFFF))
+            .setColor(Math.floor(Math.random() * 0xFFFFFF))
             .setFooter({ text: `You have ${TIMEOUT_MS / 1000} seconds to answer` });
 
         const response = await interaction.editReply({ embeds: [embed], components: [row] });
