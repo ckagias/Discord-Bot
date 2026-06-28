@@ -25,7 +25,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 - 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`, `snipe` and **3** more.
 - 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **30** more.
 - 🎮 **Minigames:** `gamble`, `coinflip`, `rps`, `wordle`, `trivia` and **3** more.
-- 💰 **Economy:** `balance`, `daily`, `work`, `rob`, `transfer`, and **2** more.
+- 💰 **Economy:** `balance`, `daily`, `work`, `rob`, `transfer` and **4** more.
 - 🎫 **Tickets:** `ticket setup`, `ticket panel`, `ticket close`, `ticket stats`, `ticket reset`
 - 🏷️ **Roles:** `reactionrole setup`, `reactionrole add`, `reactionrole remove`, `reactionrole list`
 
@@ -38,7 +38,7 @@ Other highlights:
 - Temporary bans that automatically unban after the configured duration and survive bot restarts
 - Server event logger that logs message deletes/edits, joins, leaves, kicks, bans, nickname changes, role updates, and voice activity to a configurable channel
 - Welcome/farewell messages, configurable per-server with custom messages supporting `{user}` and `{server}` placeholders
-- Per-server economy with passive chat earnings, daily streak bonuses (up to 3.5× on day 7+), hourly `/work` jobs with flavour text, a `/rob` command with risk/reward, transfers, admin `/eco` tools, and a leaderboard. Minigames (gamble, coinflip, rps, wordle, trivia, hangman, blackjack, heist) all bet and pay out real credits atomically; coinflip, rps, and blackjack support PvP challenges where the opponent must accept within 30 seconds; the heist is a multi-player event where the organizer sets an entry fee, a crew joins within 60 seconds, and loot is multiplied and split among survivors; economy leaderboard also visible in the dashboard
+- Per-server economy with passive chat earnings, daily streak bonuses (up to 3.5× on day 7+), hourly `/work` jobs with flavour text, a `/rob` command with risk/reward, transfers, admin `/eco` tools, and a leaderboard. Minigames (gamble, coinflip, rps, wordle, trivia, hangman, blackjack, heist) all bet and pay out real credits atomically; coinflip, rps, and blackjack support PvP challenges where the opponent must accept within 30 seconds; the heist is a multi-player event where the organizer sets an entry fee, a crew joins within 60 seconds, and loot is multiplied and split among survivors; economy leaderboard also visible in the dashboard. Per-server shop system where admins create `role` or `badge` items at any price; users browse, buy (one per item), and sell back for 50% — role items grant/revoke a Discord role automatically, badge items appear as emojis on `/profile`
 - Persistent XP leveling per server with atomic writes, admins can map levels to roles so members are automatically granted the matching role when they level up (roles stack and members keep all earned level roles), manageable via `/levelrole` or the dashboard. Leveling page also shows a read-only top-20 leaderboard sorted by level then XP
 - AFK system with return detection and mention notifications
 - Ticket system with private channels, support role pinging, auto-cleanup of stale tickets, and per-server stats
@@ -182,6 +182,14 @@ Other highlights:
 | `/eco take`           | Remove credits from a member (Manage Server)                                             |
 | `/eco set`            | Set a member's balance to an exact amount (Manage Server)                                |
 | `/eco reset`          | Reset a member's balance, streak, and cooldowns (Manage Server)                          |
+| `/shop browse`        | Browse all available items in the server shop                                            |
+| `/shop buy`           | Buy an item from the shop (autocomplete); role items grant the role immediately          |
+| `/shop sell`          | Sell an owned item back for 50% of its original price; role items are revoked on sell    |
+| `/inventory`          | View your owned shop items, paginated (5 per page)                                       |
+| `/shopmanage add`     | Add a role or badge item to the shop (Manage Server)                                     |
+| `/shopmanage remove`  | Remove an item from the shop — existing owners keep it (Manage Server)                   |
+| `/shopmanage edit`    | Edit an item's name, price, description, or visibility (Manage Server)                   |
+| `/shopmanage list`    | List all shop items including hidden ones (Manage Server)                                |
 
 
 ### 🛡️ Moderation

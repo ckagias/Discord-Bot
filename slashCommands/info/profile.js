@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const LevelSchema = require('../../models/LevelSchema');
 const WarnSchema = require('../../models/WarnSchema');
+const InventorySchema = require('../../models/InventorySchema');
 const { getWallet, formatBalance } = require('../../utils/economy');
 
 module.exports = {
@@ -23,10 +24,11 @@ module.exports = {
             guild.members.fetch(target.id).catch(() => null),
         ]);
 
-        const [levelData, wallet, warnCount] = await Promise.all([
+        const [levelData, wallet, warnCount, inventory] = await Promise.all([
             LevelSchema.findOne({ userId: target.id, guildId: guild.id }),
             getWallet(target.id, guild.id),
             WarnSchema.countDocuments({ guildId: guild.id, userId: target.id }),
+            InventorySchema.findOne({ userId: target.id, guildId: guild.id }),
         ]);
 
         // Level / XP
@@ -37,9 +39,13 @@ module.exports = {
         // Economy
         const balanceValue = `${formatBalance(wallet.balance)} coins`;
 
-        // Badges
+        // Discord badges
         const flags = fetchedUser.flags?.toArray();
-        const badges = flags?.length ? flags.map(f => f.replace(/_/g, ' ')).join(', ') : 'None';
+        const discordBadges = flags?.length ? flags.map(f => f.replace(/_/g, ' ')).join(', ') : null;
+
+        // Shop badges
+        const shopBadges = inventory?.items.filter(i => i.type === 'badge').map(i => i.emoji) ?? [];
+        const badgeText = [discordBadges ? `\`${discordBadges}\`` : null, shopBadges.join(' ')].filter(Boolean).join(' ') || '`None`';
 
         // Dates
         const createdAt = `<t:${Math.floor(target.createdTimestamp / 1000)}:D>`;
@@ -60,7 +66,7 @@ module.exports = {
                 { name: '⚠️ Warnings', value: warnCount === 0 ? '`None`' : `\`${warnCount}\``, inline: true },
                 { name: '📅 Joined Server', value: joinedAt, inline: true },
                 { name: '🗓️ Account Created', value: createdAt, inline: true },
-                { name: '🏅 Badges', value: `\`${badges}\``, inline: true },
+                { name: '🏅 Badges', value: badgeText, inline: true },
             )
             .setFooter({ text: `Requested by ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() })
             .setTimestamp();

@@ -26,6 +26,12 @@ module.exports = {
             return;
         }
 
+        if (interaction.isAutocomplete()) {
+            const command = client.commands.get(interaction.commandName);
+            if (command?.autocomplete) await command.autocomplete(interaction).catch(() => {});
+            return;
+        }
+
         if (interaction.isModalSubmit()) {
             const handler = resolveComponent(client, 'modal', interaction.customId);
             if (handler) await handler(interaction);
