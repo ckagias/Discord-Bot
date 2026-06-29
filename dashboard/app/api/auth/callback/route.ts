@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { exchangeCodeForToken, fetchCurrentUser } from "@/lib/discord";
 import { getSession } from "@/lib/session";
 
+const BASE_URL = process.env.DASHBOARD_URL!;
+
 export async function GET(req: NextRequest) {
   const url = req.nextUrl;
   const code = url.searchParams.get("code");
@@ -13,7 +15,7 @@ export async function GET(req: NextRequest) {
   cookieStore.delete("oauth_state");
 
   if (!code || !state || !expectedState || state !== expectedState) {
-    return NextResponse.redirect(new URL("/?error=invalid_state", req.url));
+    return NextResponse.redirect(new URL("/?error=invalid_state", BASE_URL));
   }
 
   try {
@@ -25,9 +27,9 @@ export async function GET(req: NextRequest) {
     session.accessToken = access_token;
     await session.save();
 
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    return NextResponse.redirect(new URL("/dashboard", BASE_URL));
   } catch (err) {
     console.error("[OAuth callback]", err);
-    return NextResponse.redirect(new URL("/?error=auth_failed", req.url));
+    return NextResponse.redirect(new URL("/?error=auth_failed", BASE_URL));
   }
 }

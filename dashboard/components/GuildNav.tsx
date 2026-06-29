@@ -28,6 +28,7 @@ const SECTIONS = [
   { slug: "triggers",       label: "Triggers" },
   { slug: "cases",          label: "Case Log" },
   { slug: "economy",        label: "Economy" },
+  { slug: "shop",           label: "Shop" },
   { slug: "tickets",        label: "Tickets" },
   { slug: "tempvc",         label: "Temp Voice Channels" },
   { slug: "giveaways",     label: "Giveaways" },

@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Discord Bot Dashboard
 
-## Getting Started
+Next.js 16 web dashboard for managing the Discord bot. Shares the bot's MongoDB instance for real-time reads and writes.
 
-First, run the development server:
+## Features
+
+| Section | What you can manage |
+|---|---|
+| General | Bot prefix, log channel |
+| Welcome & Farewell | Join/leave messages and channels |
+| Moderation | Mod log channel, mute role |
+| Auto-Mod | Spam/caps/link filters |
+| Anti-Raid | Join-rate lockdown thresholds |
+| Warn Thresholds | Auto-action at X warnings |
+| Warnings | View and delete member warnings |
+| Leveling | XP channel, level-up roles |
+| Starboard | Channel and star threshold |
+| Reaction Roles | Emoji → role mappings |
+| Triggers | Keyword → bot reply mappings |
+| Case Log | View and delete mod cases |
+| Economy | Coin leaderboard (top 20) |
+| Shop | Add, edit, remove shop items (role grants & profile badges) |
+| Tickets | Ticket category and support role |
+| Temp Voice Channels | Auto-VC channel and category |
+| Giveaways | View and end active giveaways |
+
+## Auth
+
+Discord OAuth2 (`identify guilds` scopes). Only users with **Manage Server** permission on a guild can access that guild's dashboard. Sessions use `iron-session` (encrypted cookie). Stale/expired sessions are automatically redirected to re-authenticate.
+
+## Environment variables
+
+| Variable | Description |
+|---|---|
+| `MONGODB_URI` | MongoDB connection string (shared with bot) |
+| `ClientID` | Discord application client ID |
+| `CLIENT_SECRET` | Discord application client secret |
+| `DASHBOARD_URL` | Public base URL, e.g. `http://localhost:3000` |
+| `SESSION_SECRET` | ≥32-character secret for iron-session |
+| `Token` | Bot token (used server-side to fetch guild roles/channels) |
+
+## Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Production
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built and run via Docker — use `./restart.sh --dashboard` from the project root.

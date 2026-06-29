@@ -35,10 +35,16 @@ export default async function DashboardPage() {
     redirect("/");
   }
 
-  const [userGuilds, botGuildIds] = await Promise.all([
-    fetchUserGuilds(session.accessToken),
-    fetchBotGuildIds(),
-  ]);
+  let userGuilds: DiscordGuild[] = [];
+  let botGuildIds: Set<string> = new Set();
+  try {
+    [userGuilds, botGuildIds] = await Promise.all([
+      fetchUserGuilds(session.accessToken),
+      fetchBotGuildIds(),
+    ]);
+  } catch {
+    redirect("/api/auth/login");
+  }
 
   const manageable = userGuilds.filter(
     (g) => hasManageGuild(g) && botGuildIds.has(g.id)
