@@ -49,9 +49,10 @@ module.exports = {
                 }
             }
 
+            const prefix = `rps_${interaction.id}`;
             const challengeRow = new ActionRowBuilder().addComponents(
-                new ButtonBuilder().setCustomId('rps_accept').setLabel('Accept').setStyle(ButtonStyle.Success),
-                new ButtonBuilder().setCustomId('rps_decline').setLabel('Decline').setStyle(ButtonStyle.Danger),
+                new ButtonBuilder().setCustomId(`${prefix}_accept`).setLabel('Accept').setStyle(ButtonStyle.Success),
+                new ButtonBuilder().setCustomId(`${prefix}_decline`).setLabel('Decline').setStyle(ButtonStyle.Danger),
             );
 
             const challengeEmbed = new EmbedBuilder()
@@ -76,7 +77,7 @@ module.exports = {
             });
 
             acceptCollector.on('collect', async (i) => {
-                if (i.customId === 'rps_decline') {
+                if (i.customId === `${prefix}_decline`) {
                     return i.update({ embeds: [new EmbedBuilder().setTitle('Challenge Declined').setDescription(`${opponent} declined the challenge.`).setColor(0xc0392b)], components: [] });
                 }
 
@@ -96,7 +97,7 @@ module.exports = {
                             .setColor(Math.floor(Math.random() * 0xFFFFFF))
                             .setFooter({ text: 'You have 30 seconds to choose.' }),
                     ],
-                    components: [moveRow('pvp')],
+                    components: [moveRow(prefix)],
                 });
 
                 const picks = {};
@@ -118,7 +119,7 @@ module.exports = {
                 });
 
                 moveCollector.on('collect', async (j) => {
-                    const move = j.customId.replace('pvp_', '');
+                    const move = j.customId.replace(`${prefix}_`, '');
                     picks[j.user.id] = move;
                     await j.reply({ content: `You picked ${choices[move]} **${move}**. Waiting for the other player...`, ephemeral: true });
 
@@ -194,10 +195,11 @@ module.exports = {
             }
         }
 
+        const botPrefix = `rps_${interaction.id}`;
         const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('rock').setLabel('Rock').setEmoji('🪨').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('paper').setLabel('Paper').setEmoji('📄').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('scissors').setLabel('Scissors').setEmoji('✂️').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId(`${botPrefix}_rock`).setLabel('Rock').setEmoji('🪨').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId(`${botPrefix}_paper`).setLabel('Paper').setEmoji('📄').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId(`${botPrefix}_scissors`).setLabel('Scissors').setEmoji('✂️').setStyle(ButtonStyle.Secondary),
         );
 
         const response = await interaction.editReply({
@@ -218,7 +220,7 @@ module.exports = {
         });
 
         collector.on('collect', async (i) => {
-            const userChoice = i.customId;
+            const userChoice = i.customId.replace(`${botPrefix}_`, '');
             const botChoice = Object.keys(choices)[Math.floor(Math.random() * 3)];
             const outcome = outcomes[userChoice][botChoice];
 

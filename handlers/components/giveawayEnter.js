@@ -21,19 +21,28 @@ module.exports = {
         const userId = interaction.user.id;
         const already = giveaway.entrants.includes(userId);
 
-        if (already) {
-            giveaway.entrants = giveaway.entrants.filter(id => id !== userId);
-            await giveaway.save();
-            await interaction.reply({ content: 'You have withdrawn from the giveaway.', flags: MessageFlags.Ephemeral });
-        } else {
-            giveaway.entrants.push(userId);
-            await giveaway.save();
-            await interaction.reply({ content: 'You have entered the giveaway! Click again to withdraw.', flags: MessageFlags.Ephemeral });
+        const op = already
+            ? { $pull: { entrants: userId } }
+            : { $addToSet: { entrants: userId } };
+
+        const updated = await GiveawaySchema.findOneAndUpdate(
+            { messageId: interaction.message.id, ended: false },
+            op,
+            { new: true },
+        );
+
+        if (!updated) {
+            return interaction.reply({ content: 'This giveaway has already ended.', flags: MessageFlags.Ephemeral });
         }
 
+        await interaction.reply({
+            content: already ? 'You have withdrawn from the giveaway.' : 'You have entered the giveaway! Click again to withdraw.',
+            flags: MessageFlags.Ephemeral,
+        });
+
         const currentEmbed = interaction.message.embeds[0];
-        const updated = EmbedBuilder.from(currentEmbed).spliceFields(3, 1, { name: 'Entries', value: `${giveaway.entrants.length}`, inline: true });
-        await interaction.message.edit({ embeds: [updated] })
+        const updatedEmbed = EmbedBuilder.from(currentEmbed).spliceFields(3, 1, { name: 'Entries', value: `${updated.entrants.length}`, inline: true });
+        await interaction.message.edit({ embeds: [updatedEmbed] })
             .catch(err => console.error('[giveaway] Failed to update entry count on giveaway embed:', err));
     },
 };

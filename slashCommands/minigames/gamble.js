@@ -35,9 +35,10 @@ module.exports = {
             .setColor(Math.floor(Math.random() * 0xFFFFFF))
             .setFooter({ text: 'You have 30 seconds to decide!' });
 
+        const prefix = `gamble_${interaction.id}`;
         const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('higher').setLabel('Higher').setStyle(ButtonStyle.Success),
-            new ButtonBuilder().setCustomId('lower').setLabel('Lower').setStyle(ButtonStyle.Danger)
+            new ButtonBuilder().setCustomId(`${prefix}_higher`).setLabel('Higher').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId(`${prefix}_lower`).setLabel('Lower').setStyle(ButtonStyle.Danger)
         );
 
         const response = await interaction.editReply({ embeds: [embed], components: [row] });
@@ -51,7 +52,7 @@ module.exports = {
 
         collector.on('collect', async (i) => {
             const secondNumber = Math.floor(Math.random() * 100) + 1;
-            const result = secondNumber > firstNumber ? 'higher' : 'lower';
+            const result = secondNumber > firstNumber ? `${prefix}_higher` : `${prefix}_lower`;
             const userWon = i.customId === result;
 
             if (secondNumber === firstNumber) {
@@ -75,7 +76,7 @@ module.exports = {
                 .setTitle(userWon ? '🎉 You Won!' : '💀 You Lost!')
                 .setDescription(`The second number was **${secondNumber}**!`)
                 .addFields(
-                    { name: 'Your Choice',  value: i.customId.toUpperCase(),                                      inline: true },
+                    { name: 'Your Choice',  value: i.customId.replace(`${prefix}_`, '').toUpperCase(),            inline: true },
                     { name: 'Result',       value: userWon ? `💰 +${formatBalance(bet)}` : `💸 -${formatBalance(bet)}`, inline: true },
                     { name: 'New Balance',  value: `💳 ${formatBalance(newBalance)} credits`,                     inline: true },
                 )
