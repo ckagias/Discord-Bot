@@ -47,8 +47,8 @@ module.exports = {
 
         await cancelStaleHeists();
         await restorePunishments(client);
-        await restoreAutoroles(client);
         await restoreLockdowns(client);
+        await restoreAutoroles(client);
     }
 };
 

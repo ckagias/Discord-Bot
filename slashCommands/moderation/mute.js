@@ -63,20 +63,24 @@ module.exports = {
 
         await interaction.deferReply();
 
-        const textChannels = interaction.guild.channels.cache.filter(c => c.isTextBased());
-        const voiceChannels = interaction.guild.channels.cache.filter(c => c.isVoiceBased());
+        // Only set overwrites on channels that don't already have one for this role,
+        // to avoid hammering the API on every mute when the role is already configured.
+        const textChannels = interaction.guild.channels.cache.filter(c => c.isTextBased() && !c.permissionOverwrites.cache.has(muteRole.id));
+        const voiceChannels = interaction.guild.channels.cache.filter(c => c.isVoiceBased() && !c.permissionOverwrites.cache.has(muteRole.id));
 
-        await Promise.allSettled([
-            ...textChannels.map(c => c.permissionOverwrites.edit(muteRole, {
-                SendMessages: false,
-                SendMessagesInThreads: false,
-                AddReactions: false,
-            })),
-            ...voiceChannels.map(c => c.permissionOverwrites.edit(muteRole, {
-                Speak: false,
-                Connect: false,
-            })),
-        ]);
+        if (textChannels.size || voiceChannels.size) {
+            await Promise.allSettled([
+                ...textChannels.map(c => c.permissionOverwrites.edit(muteRole, {
+                    SendMessages: false,
+                    SendMessagesInThreads: false,
+                    AddReactions: false,
+                })),
+                ...voiceChannels.map(c => c.permissionOverwrites.edit(muteRole, {
+                    Speak: false,
+                    Connect: false,
+                })),
+            ]);
+        }
 
         await target.roles.add(muteRole, reason);
 

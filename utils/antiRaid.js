@@ -100,7 +100,14 @@ async function startLockdown(guild, guildData, { auto = false, triggeredBy = nul
     const role = guild.roles.cache.get(guildData?.antiRaidQuarantineRoleId);
     if (!role) return;
 
-    await updateGuildConfig(guild.id, { antiRaidLocked: true, antiRaidLockedAt: new Date() });
+    // Atomic check-and-set: only one concurrent caller wins the lockdown race.
+    const GuildSchema = require('../models/GuildSchema');
+    const updated = await GuildSchema.findOneAndUpdate(
+        { guildId: guild.id, antiRaidLocked: { $ne: true } },
+        { $set: { antiRaidLocked: true, antiRaidLockedAt: new Date() } },
+        { new: true },
+    );
+    if (!updated) return; // another call already won
     await ensureQuarantineOverwrites(guild, role);
 
     const alertChannel = await resolveAlertChannel(guild, guildData);
@@ -129,8 +136,6 @@ async function startLockdown(guild, guildData, { auto = false, triggeredBy = nul
 async function endLockdown(guild, guildData, { by = null } = {}) {
     if (!guildData?.antiRaidLocked) return { alreadyUnlocked: true };
 
-    await updateGuildConfig(guild.id, { antiRaidLocked: false, antiRaidLockedAt: null });
-
     const role = guild.roles.cache.get(guildData?.antiRaidQuarantineRoleId);
     const released = [];
 
@@ -148,6 +153,9 @@ async function endLockdown(guild, guildData, { by = null } = {}) {
             );
         }
     }
+
+    // Update DB only after roles are released so a mid-release crash leaves state recoverable.
+    await updateGuildConfig(guild.id, { antiRaidLocked: false, antiRaidLockedAt: null });
 
     const alertChannel = await resolveAlertChannel(guild, guildData);
     if (alertChannel) {

@@ -1,10 +1,13 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const TriggerSchema = require('../../models/TriggerSchema');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('triggers')
-        .setDescription('List all trigger words configured for this server.'),
+        .setDescription('List all trigger words configured for this server.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
+
+    permissions: PermissionFlagsBits.ManageMessages,
         
     async execute(interaction) {
         await interaction.deferReply();

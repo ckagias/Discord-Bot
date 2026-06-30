@@ -28,6 +28,14 @@ module.exports = {
             return interaction.reply({ content: 'That user is not in this server.', flags: MessageFlags.Ephemeral });
         }
 
+        if (target.id === interaction.user.id) {
+            return interaction.reply({ content: 'You cannot warn yourself.', flags: MessageFlags.Ephemeral });
+        }
+
+        if (target.id === interaction.guild.ownerId) {
+            return interaction.reply({ content: 'You cannot warn the server owner.', flags: MessageFlags.Ephemeral });
+        }
+
         if (interaction.member.roles.highest.position <= target.roles.highest.position) {
             return interaction.reply({ content: 'You cannot warn someone with an equal or higher role.', flags: MessageFlags.Ephemeral });
         }
@@ -44,6 +52,10 @@ module.exports = {
             getGuildConfig(interaction.guild.id),
             createCase({ guildId: interaction.guild.id, type: 'warn', userId: target.id, moderatorId: interaction.user.id, reason }),
         ]);
+
+        await target.user.send(
+            `You have received a warning in **${interaction.guild.name}**.\n**Reason:** ${reason}\n**Total warnings:** ${totalWarnings}`
+        ).catch(() => {});
 
         await checkWarnThresholds(interaction.guild, target, totalWarnings, guildData);
 
