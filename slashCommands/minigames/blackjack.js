@@ -69,10 +69,6 @@ module.exports = {
                     return i.update({ content: `${opponent} doesn't have enough coins to accept.`, embeds: [], components: [] });
                 }
 
-                // Deduct both bets upfront
-                await updateBalance(interaction.user.id, interaction.guild.id, -bet);
-                await updateBalance(opponent.id, interaction.guild.id, -bet);
-
                 const deck = buildDeck();
                 const playerHand = [deck.pop(), deck.pop()];
                 const opponentHand = [deck.pop(), deck.pop()];
@@ -80,8 +76,17 @@ module.exports = {
 
                 const game = { playerHand, opponentHand, dealerHand, bet, opponentBet: bet };
 
+                // Deduct both bets — if either fails, abort before creating the game record
+                const challengerDebit = await updateBalance(interaction.user.id, interaction.guild.id, -bet);
+                const opponentDebit = await updateBalance(opponent.id, interaction.guild.id, -bet);
+
+                if (!challengerDebit || !opponentDebit) {
+                    if (challengerDebit) await updateBalance(interaction.user.id, interaction.guild.id, bet);
+                    if (opponentDebit) await updateBalance(opponent.id, interaction.guild.id, bet);
+                    return i.update({ content: 'One of the players no longer has enough coins. Challenge cancelled and bets refunded.', embeds: [], components: [] });
+                }
+
                 const challengerWallet2 = await getWallet(interaction.user.id, interaction.guild.id);
-                const opponentWallet2 = await getWallet(opponent.id, interaction.guild.id);
                 const challengerCanDouble = challengerWallet2.balance >= bet;
 
                 const message = await i.update({
@@ -90,6 +95,7 @@ module.exports = {
                     fetchReply: true,
                 });
 
+                // Create game record after message exists so messageId is valid
                 await BlackjackGame.create({
                     messageId: message.id,
                     userId: interaction.user.id,
@@ -128,11 +134,13 @@ module.exports = {
         const game = { playerHand, dealerHand, bet };
 
         if (isBlackjack(playerHand)) {
-            const payout = bet + Math.floor(bet * 1.5);
+            // If dealer also has blackjack it's a push — return the bet only, no 3:2 bonus
+            const dealerAlsoBlackjack = isBlackjack(dealerHand);
+            const payout = dealerAlsoBlackjack ? bet : bet + Math.floor(bet * 1.5);
             await updateBalance(interaction.user.id, interaction.guild.id, payout);
 
             const message = await interaction.editReply({
-                embeds: [buildEmbed(game, { outcome: 'blackjack', dealerFull: true })],
+                embeds: [buildEmbed(game, { outcome: dealerAlsoBlackjack ? 'push' : 'blackjack', dealerFull: true })],
                 components: [disabledRow()],
             });
 

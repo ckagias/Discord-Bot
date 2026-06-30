@@ -237,7 +237,10 @@ async function handleDouble(interaction, isOpponent) {
         return interaction.reply({ content: `You don't have enough coins to double down.`, flags: MessageFlags.Ephemeral });
     }
 
-    await updateBalance(ownerId, game.guildId, -betAmt);
+    const debit = await updateBalance(ownerId, game.guildId, -betAmt);
+    if (!debit) {
+        return interaction.reply({ content: `You don't have enough coins to double down.`, flags: MessageFlags.Ephemeral });
+    }
     if (isOpponent) game.opponentBet *= 2;
     else game.bet *= 2;
 

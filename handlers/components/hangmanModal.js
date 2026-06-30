@@ -12,6 +12,7 @@ module.exports = {
         const game = await HangmanGame.findOne({ messageId });
         if (!game) return interaction.reply({ content: 'Game not found.', flags: MessageFlags.Ephemeral });
         if (game.finished) return interaction.reply({ content: 'This game is already over.', flags: MessageFlags.Ephemeral });
+        if (game.userId !== interaction.user.id) return interaction.reply({ content: 'This is not your game!', flags: MessageFlags.Ephemeral });
 
         const letter = interaction.fields.getTextInputValue('letter').toLowerCase();
 

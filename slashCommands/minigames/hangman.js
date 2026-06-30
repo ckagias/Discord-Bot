@@ -10,6 +10,12 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
+        // Block starting a new game while one is already active — prevents multi-game reward farming
+        const existing = await HangmanGame.findOne({ userId: interaction.user.id, guildId: interaction.guild.id, finished: false });
+        if (existing) {
+            return interaction.editReply({ content: 'You already have an active Hangman game! Finish it before starting a new one.' });
+        }
+
         const word = pickWord();
         const game = { word, guessed: [], wrong: 0, won: false, finished: false };
 

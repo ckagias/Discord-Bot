@@ -57,10 +57,6 @@ module.exports = [
                 return interaction.reply({ content: 'This heist is no longer active.', flags: MessageFlags.Ephemeral });
             }
 
-            if (heist.members.some(m => m.userId === interaction.user.id)) {
-                return interaction.reply({ content: 'You have already joined this heist.', flags: MessageFlags.Ephemeral });
-            }
-
             const wallet = await getWallet(interaction.user.id, interaction.guild.id);
             if (wallet.balance < heist.entryFee) {
                 return interaction.reply({
@@ -69,12 +65,21 @@ module.exports = [
                 });
             }
 
+            // Atomically add member — rejects if already in the list, preventing duplicate joins and double fee charges
+            const updated = await HeistSchema.findOneAndUpdate(
+                { messageId: interaction.message.id, finished: false, 'members.userId': { $ne: interaction.user.id } },
+                { $push: { members: { userId: interaction.user.id, username: interaction.user.username } } },
+                { returnDocument: 'after' }
+            );
+
+            if (!updated) {
+                return interaction.reply({ content: 'You have already joined this heist.', flags: MessageFlags.Ephemeral });
+            }
+
+            // Fee deducted only after confirmed membership — no lost coins if the save had failed
             await updateBalance(interaction.user.id, interaction.guild.id, -heist.entryFee);
 
-            heist.members.push({ userId: interaction.user.id, username: interaction.user.username });
-            await heist.save();
-
-            await interaction.update({ embeds: [lobbyEmbed(heist)], components: [lobbyRow(heist.members.length)] });
+            await interaction.update({ embeds: [lobbyEmbed(updated)], components: [lobbyRow(updated.members.length)] });
         },
     },
     {
@@ -124,7 +129,18 @@ module.exports = [
             }
 
             await interaction.update({ components: [DISABLED_ROW] });
-            await launchHeist(interaction.message, interaction.guild);
+            try {
+                await launchHeist(interaction.message, interaction.guild);
+            } catch (err) {
+                console.error('[heist] launchHeist failed after begin button:', err);
+                // Refund all members since the heist can't proceed
+                const fresh = await HeistSchema.findOne({ messageId: interaction.message.id });
+                if (fresh) {
+                    await Promise.all(fresh.members.map(m => updateBalance(m.userId, interaction.guild.id, fresh.entryFee)));
+                    await HeistSchema.updateOne({ _id: fresh._id }, { $set: { finished: true } });
+                }
+                await interaction.message.edit({ content: 'The heist failed to launch due to an error. All entry fees have been refunded.', components: [DISABLED_ROW] });
+            }
         },
     },
 ];

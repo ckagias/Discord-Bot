@@ -6,6 +6,8 @@ const { restoreLockdowns } = require('../utils/antiRaid');
 const GuildSchema = require('../models/GuildSchema');
 const PollSchema = require('../models/PollSchema');
 const { closePoll } = require('../slashCommands/fun/poll');
+const HeistSchema = require('../models/HeistSchema');
+const { updateBalance } = require('../utils/economy');
 
 module.exports = {
     name: 'clientReady',
@@ -43,11 +45,25 @@ module.exports = {
         }
         if (activePolls.length) console.log(`[poll] Restored ${activePolls.length} active timed poll(s).`);
 
+        await cancelStaleHeists();
         await restorePunishments(client);
         await restoreAutoroles(client);
         await restoreLockdowns(client);
     }
 };
+
+// Cancel any heists that were in-flight when the bot restarted and refund all entry fees.
+// The in-memory setTimeout is lost on restart so these would never resolve otherwise.
+async function cancelStaleHeists() {
+    const stale = await HeistSchema.find({ finished: false }).catch(() => []);
+    if (!stale.length) return;
+
+    for (const heist of stale) {
+        await HeistSchema.updateOne({ _id: heist._id }, { $set: { finished: true } });
+        await Promise.allSettled(heist.members.map(m => updateBalance(m.userId, heist.guildId, heist.entryFee)));
+    }
+    console.log(`[heist] Cancelled ${stale.length} stale heist(s) and refunded entry fees.`);
+}
 
 async function restoreAutoroles(client) {
     const configs = await GuildSchema.find({ autoroleId: { $ne: null } }).catch(() => []);

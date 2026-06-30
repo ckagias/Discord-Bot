@@ -7,21 +7,24 @@ function successChance(memberCount) {
     return Math.min(0.30 + (memberCount - 1) * 0.05, 0.75);
 }
 
-// Each surviving member gets an equal share of the total pot, plus a random bonus multiplier (1.5x–3x)
+// Each surviving member gets an equal share of the total pot, plus a random bonus multiplier (1.5x–3x).
+// Remainder coins (from floor division) go to the first survivor so no coins are destroyed.
 function calcPayout(totalPot, survivors) {
     const multiplier = 1.5 + Math.random() * 1.5; // 1.5x–3x
     const total = Math.floor(totalPot * multiplier);
     const perPerson = Math.floor(total / survivors);
-    return { perPerson, multiplier };
+    const remainder = total - perPerson * survivors;
+    return { perPerson, remainder, multiplier };
 }
 
 async function launchHeist(message, guild) {
-    const heist = await HeistSchema.findOne({ messageId: message.id, finished: false });
+    // Atomic guard — only one of setTimeout and heist_begin can win this update
+    const heist = await HeistSchema.findOneAndUpdate(
+        { messageId: message.id, finished: false },
+        { $set: { finished: true } },
+        { returnDocument: 'after' }
+    );
     if (!heist) return;
-
-    // Mark finished to prevent double-fire
-    heist.finished = true;
-    await heist.save();
 
     const disabledRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('heist_join').setLabel('Join Heist').setEmoji('🔫').setStyle(ButtonStyle.Primary).setDisabled(true),
@@ -70,10 +73,10 @@ async function launchHeist(message, guild) {
     const caught = shuffled.slice(0, caughtCount);
     const survivors = shuffled.slice(caughtCount);
 
-    const { perPerson, multiplier } = calcPayout(totalPot, survivors.length);
+    const { perPerson, remainder, multiplier } = calcPayout(totalPot, survivors.length);
 
-    // Pay survivors
-    await Promise.all(survivors.map(m => updateBalance(m.userId, guild.id, perPerson)));
+    // Pay survivors — first survivor gets any remainder from floor division
+    await Promise.all(survivors.map((m, i) => updateBalance(m.userId, guild.id, perPerson + (i === 0 ? remainder : 0))));
 
     const caughtLine = caught.length
         ? `**Caught:** ${caught.map(m => m.username).join(', ')} — lost their cut\n`
