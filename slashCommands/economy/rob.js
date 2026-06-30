@@ -62,7 +62,11 @@ module.exports = {
         const stealAmount = Math.floor(targetWallet.balance * (0.1 + Math.random() * 0.3));
 
         if (success) {
-            await updateBalance(target.id, interaction.guild.id, -stealAmount);
+            // Atomically deduct from target — may return null if they were drained concurrently
+            const targetUpdated = await updateBalance(target.id, interaction.guild.id, -stealAmount);
+            if (!targetUpdated) {
+                return interaction.editReply({ content: `**${target.username}** no longer has enough credits to rob.` });
+            }
             const updated = await updateBalance(interaction.user.id, interaction.guild.id, stealAmount);
 
             const embed = new EmbedBuilder()

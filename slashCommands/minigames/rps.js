@@ -146,16 +146,27 @@ module.exports = {
                     ];
 
                     if (bet) {
-                        if (outcome === 'win') {
-                            await updateBalance(interaction.user.id, interaction.guild.id, bet);
-                            await updateBalance(opponent.id, interaction.guild.id, -bet);
-                            fields.push({ name: 'Result', value: `${interaction.user}: 💰 +${formatBalance(bet)}\n${opponent}: 💸 -${formatBalance(bet)}`, inline: false });
-                        } else if (outcome === 'lose') {
-                            await updateBalance(interaction.user.id, interaction.guild.id, -bet);
-                            await updateBalance(opponent.id, interaction.guild.id, bet);
-                            fields.push({ name: 'Result', value: `${interaction.user}: 💸 -${formatBalance(bet)}\n${opponent}: 💰 +${formatBalance(bet)}`, inline: false });
-                        } else {
+                        if (outcome === 'tie') {
                             fields.push({ name: 'Result', value: '🤝 Tie — no coins exchanged', inline: false });
+                        } else {
+                            // Deduct both bets up front, then credit the winner
+                            const challengerDebit = await updateBalance(interaction.user.id, interaction.guild.id, -bet);
+                            const opponentDebit = await updateBalance(opponent.id, interaction.guild.id, -bet);
+
+                            if (!challengerDebit || !opponentDebit) {
+                                if (challengerDebit) await updateBalance(interaction.user.id, interaction.guild.id, bet);
+                                if (opponentDebit) await updateBalance(opponent.id, interaction.guild.id, bet);
+                                return interaction.editReply({ content: 'One of the players no longer has enough credits. Game cancelled and bets refunded.', embeds: [], components: [] });
+                            }
+
+                            const winnerId = outcome === 'win' ? interaction.user.id : opponent.id;
+                            await updateBalance(winnerId, interaction.guild.id, bet * 2);
+
+                            if (outcome === 'win') {
+                                fields.push({ name: 'Result', value: `${interaction.user}: 💰 +${formatBalance(bet)}\n${opponent}: 💸 -${formatBalance(bet)}`, inline: false });
+                            } else {
+                                fields.push({ name: 'Result', value: `${interaction.user}: 💸 -${formatBalance(bet)}\n${opponent}: 💰 +${formatBalance(bet)}`, inline: false });
+                            }
                         }
                     }
 

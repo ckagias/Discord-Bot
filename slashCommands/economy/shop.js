@@ -87,6 +87,9 @@ module.exports = {
             const shopItem = await ShopSchema.findOne({ itemId, guildId: interaction.guild.id });
             const refund = shopItem ? Math.floor(shopItem.price * 0.5) : 0;
 
+            // Credit coins before removing from inventory — prevents partial failure leaving user with neither
+            const updated = refund > 0 ? await updateBalance(interaction.user.id, interaction.guild.id, refund) : await getWallet(interaction.user.id, interaction.guild.id);
+
             // Remove from inventory
             await InventorySchema.updateOne(
                 { userId: interaction.user.id, guildId: interaction.guild.id },
@@ -98,9 +101,6 @@ module.exports = {
                 const member = await interaction.guild.members.fetch(interaction.user.id).catch(() => null);
                 if (member) await member.roles.remove(shopItem.roleId).catch(() => null);
             }
-
-            // Refund coins
-            const updated = refund > 0 ? await updateBalance(interaction.user.id, interaction.guild.id, refund) : await getWallet(interaction.user.id, interaction.guild.id);
 
             const embed = new EmbedBuilder()
                 .setTitle('Item Sold')
@@ -120,35 +120,46 @@ module.exports = {
         const item = await ShopSchema.findOne({ itemId, guildId: interaction.guild.id, enabled: true });
         if (!item) return interaction.editReply({ content: 'That item does not exist or is no longer available.' });
 
-        // Check already owned
-        const inventory = await InventorySchema.findOne({ userId: interaction.user.id, guildId: interaction.guild.id });
-        if (inventory?.items.some(i => i.itemId === item.itemId)) {
+        // Atomically add to inventory only if not already owned — prevents double-buy race
+        const inventoryResult = await InventorySchema.findOneAndUpdate(
+            { userId: interaction.user.id, guildId: interaction.guild.id, 'items.itemId': { $ne: item.itemId } },
+            { $push: { items: { itemId: item.itemId, name: item.name, type: item.type, emoji: item.emoji } } },
+            { upsert: true, returnDocument: 'after' }
+        ).catch(() => null);
+
+        if (!inventoryResult) {
             return interaction.editReply({ content: `You already own **${item.name}**.` });
         }
 
-        // Deduct coins
+        // Deduct coins — if this fails (insufficient funds), roll back the inventory entry
         const updated = await updateBalance(interaction.user.id, interaction.guild.id, -item.price);
         if (!updated) {
+            await InventorySchema.updateOne(
+                { userId: interaction.user.id, guildId: interaction.guild.id },
+                { $pull: { items: { itemId: item.itemId } } }
+            );
             const wallet = await getWallet(interaction.user.id, interaction.guild.id);
             return interaction.editReply({
                 content: `You don't have enough coins. **${item.name}** costs ${formatBalance(item.price)} coins and your balance is ${formatBalance(wallet.balance)}.`,
             });
         }
 
-        // Apply effect
+        // Apply role effect after successful purchase
         if (item.type === 'role' && item.roleId) {
             const member = await interaction.guild.members.fetch(interaction.user.id).catch(() => null);
             if (member) {
-                await member.roles.add(item.roleId).catch(() => null);
+                const roleGranted = await member.roles.add(item.roleId).catch(() => null);
+                if (roleGranted === null) {
+                    // Role grant failed (permissions/hierarchy) — refund and remove from inventory
+                    await updateBalance(interaction.user.id, interaction.guild.id, item.price);
+                    await InventorySchema.updateOne(
+                        { userId: interaction.user.id, guildId: interaction.guild.id },
+                        { $pull: { items: { itemId: item.itemId } } }
+                    );
+                    return interaction.editReply({ content: `Purchase failed: I don't have permission to grant the **${item.name}** role. Your coins have been refunded.` });
+                }
             }
         }
-
-        // Add to inventory
-        await InventorySchema.findOneAndUpdate(
-            { userId: interaction.user.id, guildId: interaction.guild.id },
-            { $push: { items: { itemId: item.itemId, name: item.name, type: item.type, emoji: item.emoji } } },
-            { upsert: true }
-        );
 
         const typeNote = item.type === 'role'
             ? 'The role has been granted to you.'

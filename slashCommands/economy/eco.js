@@ -44,12 +44,15 @@ module.exports = {
         }
 
         if (sub === 'take') {
-            const wallet = await getWallet(target.id, interaction.guild.id);
-            const deduct = Math.min(amount, wallet.balance);
-            const updated = await updateBalance(target.id, interaction.guild.id, -deduct);
-            const newBalance = updated ? updated.balance : 0;
+            const updated = await updateBalance(target.id, interaction.guild.id, -amount);
+            if (!updated) {
+                const wallet = await getWallet(target.id, interaction.guild.id);
+                return interaction.editReply({
+                    content: `**${target.username}** only has **${formatBalance(wallet.balance)}** credits (not enough to take ${formatBalance(amount)}).`,
+                });
+            }
             return interaction.editReply({
-                content: `Took **${formatBalance(deduct)}** credits from **${target.username}**. New balance: **${formatBalance(newBalance)}**.`,
+                content: `Took **${formatBalance(amount)}** credits from **${target.username}**. New balance: **${formatBalance(updated.balance)}**.`,
             });
         }
 

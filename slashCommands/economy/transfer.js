@@ -38,7 +38,12 @@ module.exports = {
             });
         }
 
-        await updateBalance(target.id, interaction.guild.id, amount);
+        const receiverWallet = await updateBalance(target.id, interaction.guild.id, amount);
+        if (!receiverWallet) {
+            // Receiver credit failed — reverse the sender debit so no coins are lost
+            await updateBalance(interaction.user.id, interaction.guild.id, amount);
+            return interaction.editReply({ content: 'Transfer failed: could not credit the recipient. Your coins have been returned.' });
+        }
 
         const embed = new EmbedBuilder()
             .setColor(Math.floor(Math.random() * 0xFFFFFF))

@@ -79,20 +79,26 @@ module.exports = {
 
                 const result = Math.random() < 0.5 ? 'heads' : 'tails';
                 const emoji = result === 'heads' ? '🪙' : '🟤';
-                // Challenger always calls heads
-                const challengerWon = result === 'heads';
+                // Challenger picks their guess (from the optional guess option), random if not provided
+                const challengerGuess = guess ?? (Math.random() < 0.5 ? 'heads' : 'tails');
+                const challengerWon = challengerGuess === result;
 
-                if (challengerWon) {
-                    await updateBalance(interaction.user.id, interaction.guild.id, bet);
-                    await updateBalance(opponent.id, interaction.guild.id, -bet);
-                } else {
-                    await updateBalance(interaction.user.id, interaction.guild.id, -bet);
-                    await updateBalance(opponent.id, interaction.guild.id, bet);
+                // Deduct both bets up front, then credit the winner — prevents one side paying if the other spent coins after accepting
+                const challengerDebit = await updateBalance(interaction.user.id, interaction.guild.id, -bet);
+                const opponentDebit = await updateBalance(opponent.id, interaction.guild.id, -bet);
+
+                if (!challengerDebit || !opponentDebit) {
+                    if (challengerDebit) await updateBalance(interaction.user.id, interaction.guild.id, bet);
+                    if (opponentDebit) await updateBalance(opponent.id, interaction.guild.id, bet);
+                    return i.update({ content: 'One of the players no longer has enough credits. Game cancelled and bets refunded.', embeds: [], components: [] });
                 }
 
+                await updateBalance(challengerWon ? interaction.user.id : opponent.id, interaction.guild.id, bet * 2);
+
+                const guessLabel = challengerGuess.charAt(0).toUpperCase() + challengerGuess.slice(1);
                 const resultEmbed = new EmbedBuilder()
                     .setTitle(`${challengerWon ? interaction.user.username : opponent.username} wins!`)
-                    .setDescription(`The coin landed on **${result.charAt(0).toUpperCase() + result.slice(1)}**! ${emoji}\n\n${interaction.user} called **Heads** — ${challengerWon ? '✅ correct!' : '❌ wrong!'}`)
+                    .setDescription(`The coin landed on **${result.charAt(0).toUpperCase() + result.slice(1)}**! ${emoji}\n\n${interaction.user} called **${guessLabel}** — ${challengerWon ? '✅ correct!' : '❌ wrong!'}`)
                     .addFields(
                         { name: interaction.user.username, value: challengerWon ? `💰 +${formatBalance(bet)}` : `💸 -${formatBalance(bet)}`, inline: true },
                         { name: opponent.username, value: challengerWon ? `💸 -${formatBalance(bet)}` : `💰 +${formatBalance(bet)}`, inline: true },
