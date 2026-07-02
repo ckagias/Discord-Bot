@@ -23,7 +23,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 - ⏫ **Leveling:** `leaderboard`, `level`, `toggleleveling`, `levelrole`, `levelchannel`
 - 🎵 **Music:** `play`, `skip`, `pause`, `resume`, `stop` and **8** more.
 - 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`, `snipe` and **4** more.
-- 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **30** more.
+- 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **31** more.
 - 🎮 **Minigames:** `gamble`, `coinflip`, `rps`, `wordle`, `trivia` and **3** more.
 - 💰 **Economy:** `balance`, `daily`, `work`, `rob`, `transfer` and **4** more.
 - 🎫 **Tickets:** `ticket setup`, `ticket panel`, `ticket close`, `ticket stats`, `ticket reset`
@@ -32,7 +32,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 Other highlights:
 
 - Full moderation suite with role hierarchy checks, bot capability guards, and runtime permission checks on every command; every mod action (warn, kick, ban, mute, timeout, unban, unmute) is recorded as a numbered case per server, viewable and deletable via `/case` commands or the dashboard Case Log page
-- Configurable auto-moderation: filters for banned words, spam/flood, excessive mentions, and invite links, with a per-server action (delete, delete + warn, or delete + timeout), DM notice to the affected user, and exemptions for admins/moderators managed from the dashboard
+- Configurable auto-moderation: filters for banned words, spam/flood, excessive mentions, and invite links, with a per-server action (delete, delete + warn, or delete + timeout), DM notice to the affected user, and exemptions for admins/moderators; fully configurable via `/automod` or the dashboard Auto-Mod page
 - Trigger system: server admins configure keyword and the response for that word, bot replies when the word appears standalone in a message (Unicode-safe, works with Greek and other non-ASCII languages)
 - Mute system using a configurable muted role with automatic channel-level permission overwrites so the mute holds regardless of other roles; supports optional timed mutes that lift automatically and survive bot restarts
 - Temporary bans that automatically unban after the configured duration and survive bot restarts
@@ -236,6 +236,14 @@ Other highlights:
 | `/antiraid release`     | Remove the quarantine role from a specific member (false-positive recovery) (Manage Server)      |
 | `/antiraid config`      | Set the join threshold, time window, and enable/disable automatic detection (Manage Server)      |
 | `/antiraid status`      | Show current anti-raid config: role, thresholds, lockdown state, and start time (Manage Server)  |
+| `/automod toggle`       | Enable or disable auto-moderation entirely (Manage Server)                                       |
+| `/automod filter`       | Toggle an individual filter: banned words, spam/flood, mentions, or invite links (Manage Server) |
+| `/automod action`       | Set the action taken on a filtered message: delete only, delete + warn, or delete + timeout (Manage Server) |
+| `/automod mentionlimit` | Set the max mentions allowed per message before the mentions filter triggers (Manage Server)      |
+| `/automod word add`     | Add a word to the banned word list (Manage Server)                                               |
+| `/automod word remove`  | Remove a word from the banned word list (Manage Server)                                          |
+| `/automod word list`    | List all banned words (Manage Server)                                                            |
+| `/automod view`         | View the current auto-moderation configuration (Manage Server)                                   |
 
 
 ### 🎫 Tickets
