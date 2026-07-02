@@ -2,7 +2,6 @@
 config.json
 .env
 desktop.ini
-src/clean.js
 
 # Ignore entire folders
 node_modules/

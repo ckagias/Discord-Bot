@@ -339,6 +339,11 @@ Other highlights:
    node src/index.js
   ```
 
+If you ever see duplicate or leftover guild-specific commands (e.g. from earlier testing), clear them with:
+```bash
+ node src/clean.js <guildId>
+```
+
 #### Where to get your keys
 
 - Bot token and Client ID: [https://discord.com/developers/applications](https://discord.com/developers/applications)

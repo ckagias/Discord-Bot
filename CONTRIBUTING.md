@@ -37,7 +37,8 @@
 discord-bot/
 ├── src/
 │   ├── index.js              # Entry point — creates the client and loads handlers
-│   └── cmd.js                # Registers slash commands with the Discord API
+│   ├── cmd.js                # Registers slash commands with the Discord API
+│   └── clean.js              # Deletes leftover guild-specific slash commands: node src/clean.js <guildId>
 ├── events/                   # One file per Discord event (messageCreate, interactionCreate, …)
 ├── handlers/
 │   ├── slashCommandHandler.js    # Auto-discovers every file in slashCommands/
