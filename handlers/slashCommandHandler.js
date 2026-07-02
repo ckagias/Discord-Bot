@@ -20,6 +20,7 @@ module.exports = (client) => {
             }
 
             if (command.data && command.execute) {
+                command.category = folder;
                 client.commands.set(command.data.name, command);
             } else {
                 console.warn(`[slashCommandHandler] ${file} is missing required "data" or "execute" property, skipping.`);
