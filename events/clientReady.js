@@ -8,6 +8,8 @@ const PollSchema = require('../models/PollSchema');
 const { closePoll } = require('../slashCommands/fun/poll');
 const HeistSchema = require('../models/HeistSchema');
 const { updateBalance } = require('../utils/economy');
+const ReminderSchema = require('../models/ReminderSchema');
+const { sendReminder } = require('../slashCommands/utility/remind');
 
 module.exports = {
     name: 'clientReady',
@@ -48,6 +50,17 @@ module.exports = {
             }
         }
         if (activePolls.length) console.log(`[poll] Restored ${activePolls.length} active timed poll(s).`);
+
+        const activeReminders = await ReminderSchema.find({ sent: false });
+        for (const reminder of activeReminders) {
+            const remaining = reminder.remindAt.getTime() - Date.now();
+            if (remaining <= 0) {
+                await sendReminder(client, reminder);
+            } else {
+                setTimeout(() => sendReminder(client, reminder), remaining);
+            }
+        }
+        if (activeReminders.length) console.log(`[remind] Restored ${activeReminders.length} active reminder(s).`);
 
         await cancelStaleHeists();
         await restorePunishments(client);

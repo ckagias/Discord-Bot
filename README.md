@@ -22,7 +22,7 @@ If you find this useful, feel free to leave a ⭐ to help others find it!
 - ℹ️ **Info:** `avatar`, `help`, `commands`, `weather`, `github` and **10** more.
 - ⏫ **Leveling:** `leaderboard`, `level`, `toggleleveling`, `levelrole`, `levelchannel`
 - 🎵 **Music:** `play`, `skip`, `pause`, `resume`, `stop` and **8** more.
-- 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`, `snipe` and **3** more.
+- 🔧 **Utility:** `purge`, `shorten`, `afk`, `slowmode`, `snipe` and **4** more.
 - 🛡️ **Moderation:** `kick`, `ban`, `timeout`, `mute`, `warn` and **30** more.
 - 🎮 **Minigames:** `gamble`, `coinflip`, `rps`, `wordle`, `trivia` and **3** more.
 - 💰 **Economy:** `balance`, `daily`, `work`, `rob`, `transfer` and **4** more.
@@ -49,6 +49,7 @@ Other highlights:
 - Giveaway system with button-based entry, live entrant count, configurable winner count, and MongoDB persistence so active giveaways survive bot restarts
 - Temporary voice channels with optional locking, user limit, and invite-only access
 - Custom embed builder with a two-step modal flow. Main fields (title, description, color, footer, image) then optional inline or full-width fields, plus an in-Discord formatting reference
+- Personal reminders via `/remind`, backed by MongoDB so scheduled reminders survive bot restarts
 - Docker support with Lavalink and MongoDB services included
 - Graceful shutdown handling for clean Docker restarts
 
@@ -149,6 +150,9 @@ Other highlights:
 | `/embed create`    | Build and post a custom embed via a two-step modal (main fields + optional fields) (Manage Messages) |
 | `/embed edit`      | Edit an existing embed posted by the bot, pre-filled with current values (Manage Messages)           |
 | `/embed help`      | Show an in-Discord formatting reference for markdown, links, mentions, and timestamps                |
+| `/remind set`      | Set a personal reminder with a duration and message; persists across bot restarts                    |
+| `/remind list`     | List your active reminders                                                                          |
+| `/remind cancel`   | Cancel one of your active reminders by ID                                                           |
 
 
 ### 🎮 Minigames
